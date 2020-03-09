@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+
+    <cn.bingoogolapple.qrcode.zxing.ZXingView
+        android:id="@+id/zxv_fragment_scan_sign"
+        app:qrcv_qrCodeTipText="将二维码放入框内，即可自动扫码"
+        app:qrcv_isShowTipTextAsSingleLine="true"
+        app:qrcv_isTipTextBelowRect="true"
+        app:qrcv_isAutoZoom="true"
+        app:qrcv_toolbarHeight="48dp"
+        app:qrcv_isOnlyDecodeScanBoxArea="true"
+        app:qrcv_cornerColor="@color/scanActivityToolBarColor"
+        app:qrcv_scanLineColor="@color/scanActivityToolBarColor"
+        app:qrcv_borderColor="@color/scanActivityToolBarColor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <TextView
+        android:elevation="1dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/transparent"
+        android:id="@+id/tv_fragment_scan_change"
+        android:padding="10dp"
+        android:layout_marginTop="150dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="学号录入"
+        android:textStyle="bold"
+        android:textColor="@color/scanActivityToolBarColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/scanActivityBackground"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.constraint.ConstraintLayout
+        android:padding="10dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:padding="15dp"
+            android:hint="输入学号"
+            android:inputType="number"
+            android:maxLength="10"
+            android:background="@drawable/rectangle_background_white_conner8"
+            android:id="@+id/et_fragment_sign_type_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_fragment_sign_type_hint"
+            android:textColor="@color/md_red_500"
+            android:text=""
+            app:layout_constraintStart_toStartOf="@id/et_fragment_sign_type_id"
+            app:layout_constraintTop_toBottomOf="@+id/et_fragment_sign_type_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:textSize="16sp"
+            android:textColor="@drawable/button_text_color"
+            android:layout_marginTop="50dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_fragment_sign_type_id"
+            android:background="@drawable/button_background"
+            android:text="录入"
+            android:id="@+id/btn_fragment_sign_type_confirm"
+            android:layout_width="100dp"
+            android:layout_height="30dp" />
+        <Button
+            android:textSize="16sp"
+            android:textColor="@drawable/button_text_color"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_fragment_sign_type_confirm"
+            android:background="@drawable/button_background"
+            android:text="扫码录入"
+            android:id="@+id/btn_fragment_sign_change"
+            android:layout_width="100dp"
+            android:layout_height="30dp" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>

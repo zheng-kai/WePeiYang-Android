@@ -20,6 +20,14 @@ import com.twtstudio.retrox.bike.bike.ui.main.BikeActivity
 import com.twtstudio.service.tjwhm.exam.home.ExamHomeActivity
 import com.twtstudio.tjliqy.party.ui.home.PartyActivity
 import com.avarye.mall.main.MallActivity
+import com.twt.scan.scanactivity.home.HomeActivity
+import com.twt.wepeiyang.commons.experimental.CommonContext
+import com.twt.wepeiyang.commons.experimental.extensions.QuietCoroutineExceptionHandler
+import com.twt.wepeiyang.commons.experimental.preference.CommonPreferences
+import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.*
 
 class OtherItem : Item {
@@ -88,6 +96,11 @@ class OtherItem : Item {
                 addItem("考表", "一年用两次") {
                     mtaClick("app_首页OtherItem考表Item")
                     it.context.startActivity<ExamTableActivity>()
+                }
+                addItem("活动", "活动管理按这里！") {
+                    mtaClick("app_首页OtherItem活动Item")
+                    it.context.startActivity<HomeActivity>()
+
                 }
             }
         }
