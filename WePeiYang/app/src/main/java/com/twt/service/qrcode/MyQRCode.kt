@@ -39,16 +39,14 @@ class MyQRCode : AppCompatActivity() {
 
         job = GlobalScope.launch(Dispatchers.Main) {
             while (true) {
-                //TODO
-//                generateQRCode()
-//                delay(60000) // 设置时间，1分钟刷新一次
+                generateQRCode()
+                delay(60000) // 设置时间，1分钟刷新一次
             }
 
         }
         ivQRCode.setOnClickListener {
             GlobalScope.launch(Dispatchers.Main) {
-//                generateQRCode()
-//TODO
+                generateQRCode()
             }
         }
         findViewById<TextView>(tv_my_qrcode_name).text = CommonPreferences.realName

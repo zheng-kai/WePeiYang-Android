@@ -69,7 +69,6 @@ class FragmentTypeSign : Fragment() {
 //                                    } else {
 //                                        Toasty.normal(CommonContext.application, result.message)
 //                                    }
-// TODO
                                 }
                                 Toasty.normal(CommonContext.application, "录入成功！").show()
                                 dialog.dismiss()

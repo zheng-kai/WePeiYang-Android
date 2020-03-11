@@ -21,6 +21,7 @@ import com.twt.service.ecard.model.EcardPref
 import com.twt.service.ecard.model.isBindECardBoolean
 import com.twt.service.ecard.model.isBindECardLiveData
 import com.twt.service.ecard.view.EcardLoginActivity
+import com.twt.service.qrcode.MyQRCode
 import com.twt.service.settings.RealBindAndDropOutService
 import com.twt.service.settings.SettingsActivity
 import com.twt.service.settings.SingleBindActivity
@@ -165,6 +166,10 @@ class UserFragment : Fragment() {
                                         value = if (CommonPreferences.isBindBike) "已绑定" else "未绑定"
                                     }) {
                                         activity?.let { Toasty.info(it, "自行车", Toast.LENGTH_SHORT).show() }
+                                    },
+                                    UserItem.ActionItem(R.drawable.ic_qrcode, "二维码") {
+                                        val intent = Intent(context, MyQRCode::class.java)
+                                        context.startActivity(intent)
                                     },
                                     UserItem.ActionItem(R.drawable.ic_settings, "设置") {
                                         val intent = Intent(context, SettingsActivity::class.java)

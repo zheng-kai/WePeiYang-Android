@@ -101,7 +101,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/iv_qrcode_display"
-                android:text="扫描上方二维码，进行签到"
+                android:text="向管理员出示上方二维码，进行签到"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </android.support.constraint.ConstraintLayout>

@@ -62,7 +62,7 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:theme="@style/AppThemeActionBar" />
-
+        <activity android:name=".qrcode.MyQRCode"/>
         <activity android:name=".settings.BindActivity" />
         <activity android:name=".home.message.MessageListActivity"/>
         <activity
