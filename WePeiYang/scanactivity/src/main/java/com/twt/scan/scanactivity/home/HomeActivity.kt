@@ -33,9 +33,9 @@ class HomeActivity : AppCompatActivity() {
         vp_home.apply {
             this.offscreenPageLimit = 2
             adapter = HomeFragmentPagerAdapter(supportFragmentManager,
-                    listOf(HomeFragment.newInstance(HomeFragment.MANAGER_TITLE),
-                            HomeFragment.newInstance(HomeFragment.NOT_JOINED_TITLE),
-                            HomeFragment.newInstance(HomeFragment.JOINED_TITLE)))
+                    listOf(HomeFragment.newInstance(HomeTitle.MANAGER_TITLE),
+                            HomeFragment.newInstance(HomeTitle.NOT_JOINED_TITLE),
+                            HomeFragment.newInstance(HomeTitle.JOINED_TITLE)))
         }
         tl_home.setupWithViewPager(vp_home)
 

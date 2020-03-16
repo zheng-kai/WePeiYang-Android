@@ -11,8 +11,16 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_home_fragment"
+            android:layoutAnimation="@anim/scanactivity_rec_animation_enter"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>
-
+    <TextView
+        android:id="@+id/tv_home_fragment_null"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:text="暂无活动"
+        android:textColor="@color/scanActivityBlack"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </android.support.constraint.ConstraintLayout>

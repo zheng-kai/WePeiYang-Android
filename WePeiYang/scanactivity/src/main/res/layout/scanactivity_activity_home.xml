@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/scanActivityBackground"
     android:orientation="vertical"
-    tools:context=".HomeActivity">
+    tools:context=".home.HomeActivity">
 
 
     <android.support.v7.widget.Toolbar

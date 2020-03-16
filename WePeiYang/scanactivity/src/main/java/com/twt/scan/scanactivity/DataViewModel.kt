@@ -2,24 +2,28 @@ package com.twt.scan.scanactivity
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import com.twt.scan.scanactivity.api.ActivityBean
-import com.twt.scan.scanactivity.api.ScanActivityApi
-import com.twt.wepeiyang.commons.experimental.CommonContext
-import com.twt.wepeiyang.commons.experimental.extensions.QuietCoroutineExceptionHandler
-import com.twt.wepeiyang.commons.experimental.preference.CommonPreferences
-import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.twt.scan.scanactivity.home.HomeTitle
 
 object DataViewModel : ViewModel() {
-    const val MANAGER_ACTIVITY = 2
-    const val FINISHED_ACTIVITY = 1
-    const val DOING_ACTIVITY = 0
-    val managerBeanLiveData = MutableLiveData<List<ActivityBean>>()
-    val homeBeanJoinLiveData = MutableLiveData<List<ActivityBean>>()
-    val homeBeanNotJoinLiveData = MutableLiveData<List<ActivityBean>>()
+    private val managerBeanLiveData = MutableLiveData<List<ActivityBean>>()
+    private val homeBeanJoinLiveData = MutableLiveData<List<ActivityBean>>()
+    private val homeBeanNotJoinLiveData = MutableLiveData<List<ActivityBean>>()
+    fun getLiveData(type: HomeTitle): MutableLiveData<List<ActivityBean>> {
+        return when (type) {
+            HomeTitle.JOINED_TITLE -> homeBeanJoinLiveData
+            HomeTitle.NOT_JOINED_TITLE -> homeBeanNotJoinLiveData
+            HomeTitle.MANAGER_TITLE -> managerBeanLiveData
+        }
+
+    }
+    fun getBean(type:HomeTitle){
+        when (type) {
+            HomeTitle.JOINED_TITLE -> getJoinBean()
+            HomeTitle.NOT_JOINED_TITLE -> getNotJoinBean()
+            HomeTitle.MANAGER_TITLE -> getManagerBean()
+        }
+    }
     fun getManagerBean() {
 //        GlobalScope.launch(Dispatchers.Main + QuietCoroutineExceptionHandler) {
 //            val result = ScanActivityApi.getActivities(1, 20, CommonPreferences.token, MANAGER_ACTIVITY).await()
@@ -74,7 +78,7 @@ object DataViewModel : ViewModel() {
 //        }
         val bean = ActivityBean(1, "test,待参加", 1, "55555555", 2, listOf("aaa", "bbb"), 1, 2, "55", "44444444", "海绵宝宝", "我准备好了 我准备好了 我准备好了")
         homeBeanNotJoinLiveData.value = arrayListOf(bean, bean).apply {
-            this.addAll(homeBeanNotJoinLiveData.value?.toTypedArray() ?: Array(0){
+            this.addAll(homeBeanNotJoinLiveData.value?.toTypedArray() ?: Array(0) {
                 bean
             })
         }
