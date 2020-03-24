@@ -22,7 +22,7 @@ interface ScanActivityApi {
     @GET("${BASE_URL}activity/index")
     fun getActivitiesAsync(@Query("page") page: Int,
                            @Query("limit") limit: Int,
-                           @Query("method") method: Int): Deferred<CommonBody<List<ActivityBean>>>
+                           @Query("method") method: Int): Deferred<CommonBody<ActivityBean>>
 
     @GET("${BASE_URL}user/register/checkManager")
     fun checkManager(@Query("user_id") user_id: Int): Deferred<CommonBody<Any>>
@@ -40,12 +40,12 @@ data class LoginBean(
 
 data class ActivityBean(
         val currentPage: Int,
-        val `data`: List<Data>,
+        val details: List<Details>,
         val lastPage: Int,
         val number: Int
 )
 
-data class Data(
+data class Details(
         val activity_id: Int,
         val content: String,
         val end: String,
