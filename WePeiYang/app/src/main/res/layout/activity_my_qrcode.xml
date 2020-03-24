@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_gray"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".qrcode.MyQRCode">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/tb_qrcode"
@@ -90,6 +91,8 @@
             </android.support.constraint.ConstraintLayout>
 
             <ImageView
+                android:layout_margin="13dp"
+                android:scaleType="fitCenter"
                 android:id="@+id/iv_qrcode_display"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -79,7 +79,7 @@ class FragmentScanSign : Fragment(), QRCodeView.Delegate, EasyPermissions.Permis
 //                    }
 //                    .setPositiveButton("是") { dialog, _ ->
 //                        GlobalScope.launch(Dispatchers.Default + QuietCoroutineExceptionHandler) {
-//                            val commonBody = ScanActivityApi.sign(activityId, qrInfo.id, qrInfo.name, (System.currentTimeMillis() / 1000).toInt()).await()
+//                            val commonBody = ScanActivityService.sign(activityId, qrInfo.id, qrInfo.name, (System.currentTimeMillis() / 1000).toInt()).await()
 //                            if (commonBody.error_code != 0) {
 //                                Toasty.error(CommonContext.application, commonBody.message)
 //                            } else {

@@ -4,7 +4,10 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
+import android.support.constraint.Constraints
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -24,10 +27,8 @@ class MyQRCode : AppCompatActivity() {
     private var bean: QRInfo? = null
     private val gson = Gson()
     private lateinit var ivQRCode: ImageView
-    private val CARDVIEW_MARGIN = 22f
-    private val CONSTRAINTLAYOUT_MARGIN = 13f
-    private val QRCODE_MARGIN = 26
-    private lateinit var job :Job
+    private var width = 0
+    private lateinit var job: Job
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_qrcode)
@@ -35,15 +36,18 @@ class MyQRCode : AppCompatActivity() {
         enableLightStatusBarMode(true)
         ivQRCode = findViewById(iv_qrcode_display)
 
+        ivQRCode.post {
+            // 获取 imgView 的宽度
+            width = ivQRCode.measuredWidth
 
-
-        job = GlobalScope.launch(Dispatchers.Main) {
-            while (true) {
-                generateQRCode()
-                delay(60000) // 设置时间，1分钟刷新一次
+            job = GlobalScope.launch(Dispatchers.Main) {
+                while (true) {
+                    generateQRCode()
+                    delay(60000) // 设置时间，1分钟刷新一次
+                }
             }
-
         }
+
         ivQRCode.setOnClickListener {
             GlobalScope.launch(Dispatchers.Main) {
                 generateQRCode()
@@ -63,26 +67,13 @@ class MyQRCode : AppCompatActivity() {
     }
 
     private fun generateQRCode() {
-        // 此处为了计算二维码的宽度，单位px
-        val outSize = Point()
-
-        windowManager.defaultDisplay.getRealSize(outSize)
-        val x = outSize.x // x为屏幕的px值
-        val marginStartAndEnd = 2 * dip2px(this, CARDVIEW_MARGIN + CONSTRAINTLAYOUT_MARGIN + QRCODE_MARGIN) // xml布局中 二维码图片外两层布局margin分别是CARDVIEW_MARGIN和CONSTRAINTLAYOUT_MARGIN.(还没找到动态获取的方法）然后再加上图片的margin QRCODE_MARGIN
-
         bean = QRInfo(CommonPreferences.realName, CommonPreferences.studentid, System.currentTimeMillis())
-        bitmap = QRCodeEncoder.syncEncodeQRCode(gson.toJson(bean), x - marginStartAndEnd)
+        bitmap = QRCodeEncoder.syncEncodeQRCode(gson.toJson(bean), width)
         bitmap?.let {
             ivQRCode.setImageBitmap(it)
             Toasty.normal(this@MyQRCode, "二维码生成成功", Toast.LENGTH_SHORT).show()
         } ?: Toasty.error(this@MyQRCode, "二维码生成失败").show()
 
     }
-
-    private fun dip2px(context: Context, dpValue: Float): Int {
-        val scale = context.resources.displayMetrics.density
-        return (dpValue * scale + 0.5f).toInt()
-    }
-
 
 }

@@ -1,5 +1,6 @@
 package com.twt.scan.scanactivity.api
 
+import com.twt.wepeiyang.commons.experimental.cache.*
 import com.twt.wepeiyang.commons.experimental.network.CommonBody
 import com.twt.wepeiyang.commons.experimental.network.ServiceFactory
 import kotlinx.coroutines.Deferred
@@ -9,10 +10,7 @@ import retrofit2.http.Query
 
 const val BASE_URL = "https://activity.twt.edu.cn/api/"
 
-interface ScanActivityApi {
-
-    @GET("${BASE_URL}user/login")
-    fun login(): Deferred<CommonBody<LoginBean>>
+interface ScanActivityService {
 
     @POST("${BASE_URL}QrCode/scan")
     fun sign(@Query("activity_id") activity_id: Int,
@@ -30,7 +28,7 @@ interface ScanActivityApi {
     @GET("${BASE_URL}user/getNameByNumber")
     fun getNameByNumber(@Query("student_number") student_number: String): Deferred<CommonBody<String>>
 
-    companion object : ScanActivityApi by ServiceFactory()
+    companion object : ScanActivityService by ServiceFactory()
 }
 
 data class LoginBean(

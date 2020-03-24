@@ -4,7 +4,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.twt.scan.scanactivity.api.Details
-import com.twt.scan.scanactivity.api.ScanActivityApi
+import com.twt.scan.scanactivity.api.ScanActivityService
 import com.twt.scan.scanactivity.home.HomeTitle
 import com.twt.wepeiyang.commons.experimental.CommonContext
 import com.twt.wepeiyang.commons.experimental.extensions.QuietCoroutineExceptionHandler
@@ -46,7 +46,7 @@ object DataViewModel : ViewModel() {
 
     private fun getDataBean(type: Int) {
         GlobalScope.launch(Dispatchers.Main + QuietCoroutineExceptionHandler) {
-            val result = ScanActivityApi.getActivitiesAsync(1, 20, type).await()
+            val result = ScanActivityService.getActivitiesAsync(1, 20, type).await()
             if (result.error_code == 0) {
                 when (type) {
                     FINISHED_ACTIVITY -> homeBeanJoinedLiveData.value = homeBeanJoinedLiveData.value

@@ -16,8 +16,6 @@ import com.twt.wepeiyang.commons.experimental.extensions.QuietCoroutineException
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.scanactivity_fragment_sign_type.view.*
 import kotlinx.coroutines.*
-import com.twt.scan.scanactivity.api.ScanActivityApi
-import com.twt.wepeiyang.commons.experimental.preference.CommonPreferences
 
 class FragmentTypeSign : Fragment() {
     var studentId = ""
@@ -51,7 +49,7 @@ class FragmentTypeSign : Fragment() {
         view.btn_fragment_sign_type_confirm.setOnClickListener {
             if (isIdValid()) {
                 GlobalScope.launch(Dispatchers.Main + QuietCoroutineExceptionHandler) {
-                    //                    val res = ScanActivityApi.getNameByNumber(studentId).await()
+                    //                    val res = ScanActivityService.getNameByNumber(studentId).await()
 //                    if (res.error_code != 0) {
 //                        Toasty.error(CommonContext.application, res.message)
 //                    } else {
@@ -63,7 +61,7 @@ class FragmentTypeSign : Fragment() {
                             }
                             .setNegativeButton("确认") { dialog, _ ->
                                 GlobalScope.launch(Dispatchers.Default + QuietCoroutineExceptionHandler) {
-//                                    val result = ScanActivityApi.sign(activityId, studentId, (System.currentTimeMillis() / 1000).toInt()).await()
+//                                    val result = ScanActivityService.sign(activityId, studentId, (System.currentTimeMillis() / 1000).toInt()).await()
 //                                    if (result.error_code != 0) {
 //                                        Toasty.error(CommonContext.application, result.message)
 //                                    } else {
