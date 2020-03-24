@@ -1,6 +1,7 @@
 package com.twt.scan.scanactivity.sign
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Vibrator
@@ -14,9 +15,12 @@ import cn.bingoogolapple.qrcode.core.QRCodeView
 import cn.bingoogolapple.qrcode.zxing.ZXingView
 import com.google.gson.Gson
 import com.twt.scan.scanactivity.R
+import com.twt.scan.scanactivity.api.ScanActivityService
+import com.twt.wepeiyang.commons.data.QRInfo
 import com.twt.wepeiyang.commons.experimental.CommonContext
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.scanactivity_fragment_sign_scan.view.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import pub.devrel.easypermissions.EasyPermissions
@@ -29,6 +33,7 @@ class FragmentScanSign : Fragment(), QRCodeView.Delegate, EasyPermissions.Permis
     private val gson = Gson()
     lateinit var zxyScan: ZXingView
     private lateinit var listener: CanChangeFragment
+
     companion object {
         fun newInstance(): FragmentScanSign {
             return FragmentScanSign()
@@ -37,10 +42,11 @@ class FragmentScanSign : Fragment(), QRCodeView.Delegate, EasyPermissions.Permis
 
     override fun onAttach(activity: Activity?) {
         super.onAttach(activity)
-        if(activity is CanChangeFragment){
+        if (activity is CanChangeFragment) {
             listener = activity
         }
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.scanactivity_fragment_sign_scan, container, false)
         zxyScan = view.zxv_fragment_scan_sign
@@ -69,31 +75,28 @@ class FragmentScanSign : Fragment(), QRCodeView.Delegate, EasyPermissions.Permis
 
     override fun onScanQRCodeSuccess(result: String?) {
         vibrate()
-//        val qrInfo = gson.fromJson<QRInfo>(result, QRInfo::class.java)
-//        GlobalScope.launch(Dispatchers.Main + QuietCoroutineExceptionHandler) {
-//            AlertDialog.Builder(context)
-//                    .setTitle("录入信息为")
-//                    .setMessage("${qrInfo.id}  ${qrInfo.name}\n\n是否录入?")
-//                    .setNegativeButton("否") { dialog, _ ->
-//                        dialog.dismiss()
-//                    }
-//                    .setPositiveButton("是") { dialog, _ ->
-//                        GlobalScope.launch(Dispatchers.Default + QuietCoroutineExceptionHandler) {
-//                            val commonBody = ScanActivityService.sign(activityId, qrInfo.id, qrInfo.name, (System.currentTimeMillis() / 1000).toInt()).await()
-//                            if (commonBody.error_code != 0) {
-//                                Toasty.error(CommonContext.application, commonBody.message)
-//                            } else {
-//                                Toasty.normal(CommonContext.application, commonBody.message)
-//                            }
-//
-//                        }
-//                        Toasty.normal(CommonContext.application, "录入成功！").show()
-//                        dialog.dismiss()
-//                    }
-//                    .create()
-//                    .show()
-//        }
-        Toasty.normal(CommonContext.application,"录入成功", Toast.LENGTH_SHORT).show()
+        val qrInfo = gson.fromJson<QRInfo>(result, QRInfo::class.java)
+        AlertDialog.Builder(context)
+                .setTitle("录入信息为")
+                .setMessage("${qrInfo.id}  ${qrInfo.name}\n\n是否录入?")
+                .setNegativeButton("否") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .setPositiveButton("是") { dialog, _ ->
+                    GlobalScope.launch(Dispatchers.Main) {
+                        val commonBody = ScanActivityService.sign(activityId, qrInfo.id, (System.currentTimeMillis() / 1000).toInt()).await()
+                        if (commonBody.error_code != 0) {
+                            Toasty.error(CommonContext.application, commonBody.message)
+                        } else {
+                            Toasty.normal(CommonContext.application, commonBody.message)
+                        }
+                        dialog.dismiss()
+                    }
+                }
+                .create()
+                .show()
+
+        Toasty.normal(CommonContext.application, "录入成功", Toast.LENGTH_SHORT).show()
         GlobalScope.launch {
             delay(1000)
             zxyScan.startSpot()

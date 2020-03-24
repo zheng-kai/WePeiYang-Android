@@ -15,6 +15,7 @@ import cn.bingoogolapple.qrcode.zxing.QRCodeEncoder
 import com.google.gson.Gson
 import com.twt.service.R
 import com.twt.service.R.id.*
+import com.twt.wepeiyang.commons.data.QRInfo
 import com.twt.wepeiyang.commons.experimental.color.getColorCompat
 import com.twt.wepeiyang.commons.experimental.extensions.enableLightStatusBarMode
 import com.twt.wepeiyang.commons.experimental.preference.CommonPreferences

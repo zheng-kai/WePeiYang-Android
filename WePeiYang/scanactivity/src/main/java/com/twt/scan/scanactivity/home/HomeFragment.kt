@@ -1,6 +1,5 @@
 package com.twt.scan.scanactivity.home
 
-import android.arch.lifecycle.LifecycleOwner
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -10,14 +9,18 @@ import android.view.ViewGroup
 import com.twt.scan.scanactivity.DataViewModel
 import com.twt.scan.scanactivity.R
 import com.twt.scan.scanactivity.add
+import com.twt.scan.scanactivity.api.ScanActivityService
 import com.twt.scan.scanactivity.formatDate
-import com.twt.scan.scanactivity.home.HomeTitle.JOINED_TITLE
 import com.twt.scan.scanactivity.home.HomeTitle.MANAGER_TITLE
 import com.twt.scan.scanactivity.home.HomeTitle.NOT_JOINED_TITLE
 import com.twt.wepeiyang.commons.experimental.CommonContext
 import com.twt.wepeiyang.commons.experimental.extensions.bindNonNull
-import com.twt.wepeiyang.commons.ui.rec.refreshAll
+import com.twt.wepeiyang.commons.experimental.preference.CommonPreferences
+import com.twt.wepeiyang.commons.ui.rec.withItems
 import kotlinx.android.synthetic.main.scanactivity_fragment_home.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
     var title: HomeTitle = NOT_JOINED_TITLE
@@ -33,22 +36,32 @@ class HomeFragment : Fragment() {
         val view = inflater.inflate(R.layout.scanactivity_fragment_home, container, false)
         view.rv_home_fragment.layoutManager = LinearLayoutManager(CommonContext.application)
         view.srl_home_fragment.setOnRefreshListener {
-            DataViewModel.getBean(title)
-            view.srl_home_fragment.isRefreshing = false
+            GlobalScope.launch (Dispatchers.Main){
+                if(title == MANAGER_TITLE){
+                    ScanActivityService.checkManager(CommonPreferences.studentid).await()
+                }
+                DataViewModel.getBean(title)
+                view.srl_home_fragment.isRefreshing = false
+            }
         }
         DataViewModel.getLiveData(title).bindNonNull(this.activity!!){
-            if (it.isEmpty()) {
-                view.rv_home_fragment.visibility = View.INVISIBLE
-                view.tv_home_fragment_null.visibility = View.VISIBLE
-            } else {
-                view.rv_home_fragment.visibility = View.VISIBLE
-                view.tv_home_fragment_null.visibility = View.INVISIBLE
-            }
-            view.rv_home_fragment.refreshAll {
-                it?.forEach { it ->
-                    add(it.title, it.position, formatDate(it.start, it.end), it.teacher, it.activity_id)
+            when(title){
+                MANAGER_TITLE->{
+                    view.rv_home_fragment.withItems {
+                        it?.forEach { it ->
+                            add(it.title, it.position, formatDate(it.start, it.end), it.teacher, it.activity_id)
+                        }
+                    }
+                }
+                else->{
+                    view.rv_home_fragment.withItems {
+                        it?.forEach { it ->
+                            add(it.title, it.position, formatDate(it.start, it.end),it.teacher)
+                        }
+                    }
                 }
             }
+
         }
 
         return view

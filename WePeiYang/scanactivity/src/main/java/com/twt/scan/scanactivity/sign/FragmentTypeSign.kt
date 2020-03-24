@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.TextView
 import com.twt.scan.scanactivity.R
 import com.twt.scan.scanactivity.StringUtils
+import com.twt.scan.scanactivity.api.ScanActivityService
 import com.twt.wepeiyang.commons.experimental.CommonContext
 import com.twt.wepeiyang.commons.experimental.extensions.QuietCoroutineExceptionHandler
 import es.dmoral.toasty.Toasty
@@ -49,26 +50,22 @@ class FragmentTypeSign : Fragment() {
         view.btn_fragment_sign_type_confirm.setOnClickListener {
             if (isIdValid()) {
                 GlobalScope.launch(Dispatchers.Main + QuietCoroutineExceptionHandler) {
-                    //                    val res = ScanActivityService.getNameByNumber(studentId).await()
-//                    if (res.error_code != 0) {
-//                        Toasty.error(CommonContext.application, res.message)
-//                    } else {
+                    val res = ScanActivityService.getNameByNumber(studentId).await()
                     AlertDialog.Builder(context)
                             .setTitle("录入信息为\n")
-                            .setMessage("$studentId  张三\n\n是否录入?")
+                            .setMessage("$studentId  ${res.data}\n\n是否录入?")
                             .setPositiveButton("取消") { dialog, _ ->
                                 dialog.dismiss()
                             }
                             .setNegativeButton("确认") { dialog, _ ->
                                 GlobalScope.launch(Dispatchers.Default + QuietCoroutineExceptionHandler) {
-//                                    val result = ScanActivityService.sign(activityId, studentId, (System.currentTimeMillis() / 1000).toInt()).await()
-//                                    if (result.error_code != 0) {
-//                                        Toasty.error(CommonContext.application, result.message)
-//                                    } else {
-//                                        Toasty.normal(CommonContext.application, result.message)
-//                                    }
+                                    val result = ScanActivityService.sign(activityId, studentId, (System.currentTimeMillis() / 1000).toInt()).await()
+                                    if (result.error_code != 0) {
+                                        Toasty.error(CommonContext.application, result.message)
+                                    } else {
+                                        Toasty.normal(CommonContext.application, result.message)
+                                    }
                                 }
-                                Toasty.normal(CommonContext.application, "录入成功！").show()
                                 dialog.dismiss()
                             }
                             .create()

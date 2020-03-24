@@ -23,7 +23,7 @@ interface ScanActivityService {
                            @Query("method") method: Int): Deferred<CommonBody<ActivityBean>>
 
     @GET("${BASE_URL}user/register/checkManager")
-    fun checkManager(@Query("user_id") user_id: Int): Deferred<CommonBody<Any>>
+    fun checkManager(@Query("user_id") user_id: String): Deferred<CommonBody<Any>>
 
     @GET("${BASE_URL}user/getNameByNumber")
     fun getNameByNumber(@Query("student_number") student_number: String): Deferred<CommonBody<String>>
@@ -31,43 +31,38 @@ interface ScanActivityService {
     companion object : ScanActivityService by ServiceFactory()
 }
 
-data class LoginBean(
-        val permission: Int,
-        val user_id: Int
-)
-
 data class ActivityBean(
-        val currentPage: Int,
+        val currentPage: Int,//当前页数
         val details: List<Details>,
-        val lastPage: Int,
-        val number: Int
+        val lastPage: Int,//最后一页的页数
+        val number: Int//活动的总数量
 )
 
 data class Details(
-        val activity_id: Int,
-        val content: String,
-        val end: String,
-        val `file`: File,
-        val isStarter: Int,
-        val manager: List<Manager>,
-        val numberOfManager: Int,
+        val activity_id: Int,//活动id
+        val content: String, //活动内容
+        val start: String, //开始时间的时间戳
+        val end: String, //结束时间的时间戳
+        val `file`: File?,
+        val isStarter: Int,//为1则是该用户发起的活动，为0则不是
+        val numberOfManager: Int,//管理者数量
+        val manager: List<Manager>,//管理者
         val numberOfWorker: Int,
-        val position: String,
-        val start: String,
-        val teacher: String,
-        val title: String,
-        val worker: List<Worker>
+        val worker: List<Worker>,//工作人员
+        val position: String,//活动位置
+        val title: String,//活动标题
+        val teacher: String//活动发起者的姓名
 )
 
 data class File(
-        val file_id: Int,
-        val file_name: String,
-        val url: String
+        val file_id: Int,//文件的id
+        val file_name: String,//文件的名称
+        val url: String//文件的位置
 )
 
 data class Manager(
-        val name: String,
-        val student_number: String
+        val name: String,//管理员姓名
+        val student_number: String//管理员学号
 )
 
 data class Worker(

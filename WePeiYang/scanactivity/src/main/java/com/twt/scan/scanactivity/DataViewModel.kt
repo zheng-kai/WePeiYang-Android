@@ -30,7 +30,7 @@ object DataViewModel : ViewModel() {
 
     }
 
-    fun getBean(type: HomeTitle) {
+    suspend fun getBean(type: HomeTitle) {
         when (type) {
             HomeTitle.JOINED_TITLE -> getDataBean(FINISHED_ACTIVITY)
             HomeTitle.NOT_JOINED_TITLE -> getDataBean(DOING_ACTIVITY)
@@ -38,31 +38,31 @@ object DataViewModel : ViewModel() {
         }
     }
 
-    fun getAllBean() {
+    suspend fun getAllBean() {
         getDataBean(FINISHED_ACTIVITY)
         getDataBean(DOING_ACTIVITY)
         getDataBean(MANAGER_ACTIVITY)
     }
 
-    private fun getDataBean(type: Int) {
-        GlobalScope.launch(Dispatchers.Main + QuietCoroutineExceptionHandler) {
-            val result = ScanActivityService.getActivitiesAsync(1, 20, type).await()
-            if (result.error_code == 0) {
-                when (type) {
-                    FINISHED_ACTIVITY -> homeBeanJoinedLiveData.value = homeBeanJoinedLiveData.value
-                            ?.plus(result.data?.details?.toTypedArray() ?: arrayOf())
-                    MANAGER_ACTIVITY -> managerBeanLiveData.value = managerBeanLiveData.value
-                            ?.plus(result.data?.details?.toTypedArray() ?: arrayOf())
-                    DOING_ACTIVITY -> homeBeanNotJoinLiveData.value = homeBeanNotJoinLiveData.value
-                            ?.plus(result.data?.details?.toTypedArray() ?: arrayOf())
-                }
-                Toasty.normal(CommonContext.application, result.message)
-            } else {
-                Toasty.error(CommonContext.application, result.message)
+    private suspend fun getDataBean(type: Int) {
+
+        val result = ScanActivityService.getActivitiesAsync(1, 20, type).await()
+        if (result.error_code == 0) {
+            when (type) {
+                FINISHED_ACTIVITY -> homeBeanJoinedLiveData.value = homeBeanJoinedLiveData.value
+                        ?.plus(result.data?.details?.toTypedArray() ?: arrayOf())
+                MANAGER_ACTIVITY -> managerBeanLiveData.value = managerBeanLiveData.value
+                        ?.plus(result.data?.details?.toTypedArray() ?: arrayOf())
+                DOING_ACTIVITY -> homeBeanNotJoinLiveData.value = homeBeanNotJoinLiveData.value
+                        ?.plus(result.data?.details?.toTypedArray() ?: arrayOf())
             }
-            Log.d("GetBeanJoined", result.toString())
-
+            Toasty.normal(CommonContext.application, result.message)
+        } else {
+            Toasty.error(CommonContext.application, result.message)
         }
-    }
+        // 假数据
+        managerBeanLiveData.value = listOf(Details(1, "content!", "1588882342", "1588892342", null, 0, 0, listOf(), 0, listOf(), "position", "title", "teacher"))
+        homeBeanJoinedLiveData.value = listOf(Details(1, "content!", "1588882342", "1588892342", null, 0, 0, listOf(), 0, listOf(), "position", "title", "teacher"))
 
+    }
 }

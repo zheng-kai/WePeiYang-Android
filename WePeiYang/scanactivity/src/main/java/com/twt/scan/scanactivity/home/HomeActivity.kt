@@ -11,6 +11,9 @@ import com.twt.scan.scanactivity.add
 import com.twt.wepeiyang.commons.ui.rec.withItems
 import com.twt.scan.scanactivity.api.Details
 import kotlinx.android.synthetic.main.scanactivity_activity_home.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,7 +26,10 @@ class HomeActivity : AppCompatActivity() {
             onBackPressed()
         }
         DataViewModel.apply {
-            getAllBean()
+            GlobalScope.launch(Dispatchers.Main) {
+                getAllBean()
+
+            }
         }
         vp_home.apply {
             this.offscreenPageLimit = 2

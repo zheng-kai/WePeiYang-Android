@@ -57,7 +57,6 @@ class HomeItem(val title: String, val location: String, val time: String, val pe
         get() = Controller
 }
 
-fun MutableList<Item>.add(title: String, location: String, time: String, person: String) = add(HomeItem(title, location, time, person))
 class ManagerItem(val title: String, val location: String, val time: String, val person: String, val id: Int) : Item {
 
     companion object Controller : ItemController {
@@ -108,7 +107,7 @@ class ManagerItem(val title: String, val location: String, val time: String, val
     override val controller: ItemController
         get() = Controller
 }
-
+fun MutableList<Item>.add(title: String, location: String, time: String, teacher: String) = add(HomeItem(title, location, time, teacher))
 fun MutableList<Item>.add(title: String, position: String, time: String, teacher: String, activityId: Int) = add(ManagerItem(title, position, time, teacher, activityId))
 fun formatDate(start: String, end: String): String {
     val simple = SimpleDateFormat("yyyy年MM月dd日 HH:mm")
