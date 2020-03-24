@@ -8,13 +8,11 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 const val BASE_URL = "https://activity.twt.edu.cn/api/"
+
 interface ScanActivityApi {
 
-    @POST("${BASE_URL}QrCode/scan")
-    fun sign(@Query("activity_id") activity_id: Int,
-                 @Query("student_number") student_number: String,
-                 @Query("student_name") student_name: String,
-                 @Query("time") time: Int): Deferred<CommonBody<Any>>
+    @GET("${BASE_URL}user/login")
+    fun login(): Deferred<CommonBody<LoginBean>>
 
     @POST("${BASE_URL}QrCode/scan")
     fun sign(@Query("activity_id") activity_id: Int,
@@ -22,30 +20,59 @@ interface ScanActivityApi {
              @Query("time") time: Int): Deferred<CommonBody<Any>>
 
     @GET("${BASE_URL}activity/index")
-    fun getActivities(@Query("page") page: Int,
-                      @Query("limit") limit: Int,
-                      @Query("method") method: Int ): Deferred<CommonBody<List<ActivityBean>>>
+    fun getActivitiesAsync(@Query("page") page: Int,
+                           @Query("limit") limit: Int,
+                           @Query("method") method: Int): Deferred<CommonBody<List<ActivityBean>>>
 
     @GET("${BASE_URL}user/register/checkManager")
-    fun checkManager(@Query("user_id") user_id: Long): Deferred<CommonBody<Any>>
+    fun checkManager(@Query("user_id") user_id: Int): Deferred<CommonBody<Any>>
 
     @GET("${BASE_URL}user/getNameByNumber")
-    fun getNameByNumber(@Query("student_number") student_number:String) :Deferred<CommonBody<String>>
+    fun getNameByNumber(@Query("student_number") student_number: String): Deferred<CommonBody<String>>
 
     companion object : ScanActivityApi by ServiceFactory()
 }
 
+data class LoginBean(
+        val permission: Int,
+        val user_id: Int
+)
+
 data class ActivityBean(
+        val currentPage: Int,
+        val `data`: List<Data>,
+        val lastPage: Int,
+        val number: Int
+)
+
+data class Data(
         val activity_id: Int,
         val content: String,
-        val currentPage: Int,
         val end: String,
-        val lastPage: Int,
-        val manager: List<String>,
-        val numberOfCurrentPage: Int,
+        val `file`: File,
+        val isStarter: Int,
+        val manager: List<Manager>,
         val numberOfManager: Int,
+        val numberOfWorker: Int,
         val position: String,
         val start: String,
         val teacher: String,
-        val title: String
+        val title: String,
+        val worker: List<Worker>
+)
+
+data class File(
+        val file_id: Int,
+        val file_name: String,
+        val url: String
+)
+
+data class Manager(
+        val name: String,
+        val student_number: String
+)
+
+data class Worker(
+        val name: String,
+        val student_number: String
 )
