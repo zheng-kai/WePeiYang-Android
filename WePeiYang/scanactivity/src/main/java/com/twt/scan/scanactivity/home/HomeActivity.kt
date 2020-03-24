@@ -26,9 +26,7 @@ class HomeActivity : AppCompatActivity() {
         }
         Log.d("token!",CommonPreferences.token)
         DataViewModel.apply {
-            getJoinBean()
-            getManagerBean()
-            getNotJoinBean()
+            getAllBean()
         }
         vp_home.apply {
             this.offscreenPageLimit = 2

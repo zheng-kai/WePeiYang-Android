@@ -1,6 +1,9 @@
 package com.twt.scan.scanactivity.api
 
+import com.twt.wepeiyang.commons.experimental.network.AuthorizationInterceptor
+import com.twt.wepeiyang.commons.experimental.network.CodeCorrectionInterceptor
 import com.twt.wepeiyang.commons.experimental.network.CoroutineCallAdapterFactory
+import com.twt.wepeiyang.commons.experimental.network.RealAuthenticator
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -21,7 +24,7 @@ import java.util.concurrent.TimeUnit
  */
 object ActivityServiceFactory {
 
-    internal const val TRUSTED_HOST = "activity.twtstudio.com"
+    internal const val TRUSTED_HOST = "activity.twt.edu.cn"
     internal const val BASE_URL = "https://$TRUSTED_HOST/"
 
 
@@ -38,7 +41,6 @@ object ActivityServiceFactory {
             .readTimeout(20, TimeUnit.SECONDS)
             .writeTimeout(20, TimeUnit.SECONDS)
             .addNetworkInterceptor(loggingInterceptor)
-//            .addNetworkInterceptor(CodeCorrectionInterceptor.forTrusted)
             .build()
 
     val retrofit = Retrofit.Builder()

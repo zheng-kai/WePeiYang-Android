@@ -47,9 +47,3 @@ data class ActivityBean(
         val teacher: String,
         val title: String
 )
-
-data class QRInfo(
-        val name: String,
-        val id: String,
-        val time: Long
-)
