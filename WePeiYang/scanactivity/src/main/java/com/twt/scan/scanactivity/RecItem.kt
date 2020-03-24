@@ -59,23 +59,8 @@ class HomeItem(val title: String, val location: String, val time: String, val pe
 
 fun MutableList<Item>.add(title: String, location: String, time: String, person: String) = add(HomeItem(title, location, time, person))
 class ManagerItem(val title: String, val location: String, val time: String, val person: String, val id: Int) : Item {
-//    private var isVisible = false
 
     companion object Controller : ItemController {
-//        private val detailAnimationEnter = AnimationUtils.loadAnimation(CommonContext.application, R.anim.detail_animation_enter)
-//
-//        private val rotateAnimationEnter = RotateAnimation(0f, 180f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f).apply {
-//            fillAfter = true
-//            duration = 200
-//            repeatCount = 0
-//            interpolator = LinearInterpolator()
-//        }
-//        private val rotateAnimationExit = RotateAnimation(180f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f).apply {
-//            fillAfter = true
-//            duration = 200
-//            repeatCount = 0
-//            interpolator = LinearInterpolator()
-//        }
 
         override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
             val view = CommonContext.application.layoutInflater.inflate(R.layout.scanactivity_item_manager, parent, false)
@@ -96,32 +81,7 @@ class ManagerItem(val title: String, val location: String, val time: String, val
             holder.llDetail.tv_manager_detail_location.text = locationStr
             holder.llDetail.tv_manager_detail_time.text = timeStr
             holder.llDetail.tv_manager_detail_initiator.text = personStr
-//            holder.ivDetail.setOnClickListener {
-//                //                item.showDialog()
-//                holder.llDetail.apply {
-//                    if (item.isVisible) {
-//                        it.startAnimation(rotateAnimationExit)
-//                        item.isVisible = false
-////                        startAnimation(detailAnimationExit)
-//                        visibility = View.GONE
-//                    } else {
-//                        it.startAnimation(rotateAnimationEnter)
-//                        item.isVisible = true
-//                        startAnimation(detailAnimationEnter)
-//                        visibility = View.VISIBLE
-//                    }
-////                    visibility = if (item.isVisible) {
-////                        it.startAnimation(rotateAnimationExit)
-////                        item.isVisible = false
-////                        View.GONE
-////                    } else {
-////                        it.startAnimation(rotateAnimationEnter)
-////                        item.isVisible = true
-////                        View.VISIBLE
-////                    }
-//
-//                }
-//            }
+
             holder.llIdSign.setOnClickListener {
                 val intent = Intent(CommonContext.application, SignActivity::class.java)
                 intent.putExtra("fragmentType", "Type")
