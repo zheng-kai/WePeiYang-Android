@@ -1,36 +1,38 @@
 package com.twt.scan.scanactivity.api
 
+import com.twt.wepeiyang.commons.experimental.network.CommonBody
+import com.twt.wepeiyang.commons.experimental.network.ServiceFactory
 import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
+const val BASE_URL = "https://activity.twt.edu.cn/api/"
 interface ScanActivityApi {
 
-    @POST("api/QrCode/scan")
+    @POST("${BASE_URL}QrCode/scan")
     fun sign(@Query("activity_id") activity_id: Int,
                  @Query("student_number") student_number: String,
                  @Query("student_name") student_name: String,
                  @Query("time") time: Int): Deferred<CommonBody<Any>>
 
-    @POST("api/QrCode/scan")
+    @POST("${BASE_URL}QrCode/scan")
     fun sign(@Query("activity_id") activity_id: Int,
              @Query("student_number") student_number: String,
              @Query("time") time: Int): Deferred<CommonBody<Any>>
 
-    @GET("api/activity/index")
+    @GET("${BASE_URL}activity/index")
     fun getActivities(@Query("page") page: Int,
                       @Query("limit") limit: Int,
-                      @Query("token") token: String,
                       @Query("method") method: Int ): Deferred<CommonBody<List<ActivityBean>>>
 
-    @GET("api/user/register/checkManager")
+    @GET("${BASE_URL}user/register/checkManager")
     fun checkManager(@Query("user_id") user_id: Long): Deferred<CommonBody<Any>>
 
-    @GET("user/getNameByNumber")
+    @GET("${BASE_URL}user/getNameByNumber")
     fun getNameByNumber(@Query("student_number") student_number:String) :Deferred<CommonBody<String>>
 
-    companion object : ScanActivityApi by ActivityServiceFactory()
+    companion object : ScanActivityApi by ServiceFactory()
 }
 
 data class ActivityBean(
