@@ -12,6 +12,9 @@ const val BASE_URL = "https://activity.twt.edu.cn/api/"
 
 interface ScanActivityService {
 
+    @GET("${BASE_URL}openLogin")
+    fun login(@Query("twtid") twtId: String): Deferred<CommonBody<Any>>
+
     @POST("${BASE_URL}QrCode/scan")
     fun sign(@Query("activity_id") activity_id: Int,
              @Query("student_number") student_number: String,
