@@ -13,7 +13,7 @@ const val BASE_URL = "https://activity.twt.edu.cn/api/"
 interface ScanActivityService {
 
     @GET("${BASE_URL}openLogin")
-    fun login(@Query("twtid") twtId: String): Deferred<CommonBody<Any>>
+    fun login(@Query("twtid") twtId: String): Deferred<CommonBody<LoginBean>>
 
     @POST("${BASE_URL}QrCode/scan")
     fun sign(@Query("activity_id") activity_id: Int,
@@ -21,18 +21,27 @@ interface ScanActivityService {
              @Query("time") time: Int): Deferred<CommonBody<Any>>
 
     @GET("${BASE_URL}activity/index")
-    fun getActivitiesAsync(@Query("page") page: Int,
+    fun getActivitiesAsync(@Query("activity_id") activity_id: Int,
+                           @Query("page") page: Int,
                            @Query("limit") limit: Int,
                            @Query("method") method: Int): Deferred<CommonBody<ActivityBean>>
 
     @GET("${BASE_URL}user/register/checkManager")
-    fun checkManager(@Query("user_id") user_id: String): Deferred<CommonBody<Any>>
+    fun checkManager(@Query("activity_id") activity_id: Int,
+                     @Query("user_id") user_id: String): Deferred<CommonBody<Any>>
 
     @GET("${BASE_URL}user/getNameByNumber")
-    fun getNameByNumber(@Query("student_number") student_number: String): Deferred<CommonBody<String>>
+    fun getNameByNumber(@Query("activity_id") activity_id: Int,
+                        @Query("student_number") student_number: String): Deferred<CommonBody<String>>
 
     companion object : ScanActivityService by ServiceFactory()
 }
+
+data class LoginBean(
+        val permission: Int,
+        val token: List<String>,
+        val user_id: Int
+)
 
 data class ActivityBean(
         val currentPage: Int,//当前页数
