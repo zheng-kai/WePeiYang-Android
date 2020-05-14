@@ -3,6 +3,7 @@ package com.twt.scan.scanactivity.api
 import com.twt.wepeiyang.commons.experimental.cache.*
 import com.twt.wepeiyang.commons.experimental.network.CommonBody
 import com.twt.wepeiyang.commons.experimental.network.ServiceFactory
+import com.twt.wepeiyang.commons.experimental.preference.CommonPreferences
 import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -13,26 +14,31 @@ const val BASE_URL = "https://activity.twt.edu.cn/api/"
 interface ScanActivityService {
 
     @GET("${BASE_URL}openLogin")
-    fun login(@Query("twtid") twtId: String): Deferred<CommonBody<LoginBean>>
+    fun login(@Query("twtid") twtId: String = CommonPreferences.twtuname): Deferred<CommonBody<LoginBean>>
 
     @POST("${BASE_URL}QrCode/scan")
-    fun sign(@Query("activity_id") activity_id: Int,
-             @Query("student_number") student_number: String,
-             @Query("time") time: Int): Deferred<CommonBody<Any>>
+    fun sign(
+            @Query("activity_id") activity_id: Int,
+            @Query("student_number") student_number: String,
+            @Query("time") time: Int,
+            @Query("twtid") twtId: String = CommonPreferences.twtuname): Deferred<CommonBody<Any>>
 
     @GET("${BASE_URL}activity/index")
-    fun getActivitiesAsync(@Query("activity_id") activity_id: Int,
-                           @Query("page") page: Int,
-                           @Query("limit") limit: Int,
-                           @Query("method") method: Int): Deferred<CommonBody<ActivityBean>>
+    fun getActivitiesAsync(
+            @Query("page") page: Int,
+            @Query("method") method: Int,
+            @Query("limit") limit: Int = 10,
+            @Query("twtid") twtId: String = CommonPreferences.twtuname): Deferred<CommonBody<ActivityBean>>
 
     @GET("${BASE_URL}user/register/checkManager")
-    fun checkManager(@Query("activity_id") activity_id: Int,
-                     @Query("user_id") user_id: String): Deferred<CommonBody<Any>>
+    fun checkManager(
+            @Query("user_id") user_id: String,
+            @Query("twtid") twtId: String = CommonPreferences.twtuname): Deferred<CommonBody<Any>>
 
     @GET("${BASE_URL}user/getNameByNumber")
-    fun getNameByNumber(@Query("activity_id") activity_id: Int,
-                        @Query("student_number") student_number: String): Deferred<CommonBody<String>>
+    fun getNameByNumber(
+            @Query("student_number") student_number: String,
+            @Query("twtid") twtId: String = CommonPreferences.twtuname): Deferred<CommonBody<String>>
 
     companion object : ScanActivityService by ServiceFactory()
 }

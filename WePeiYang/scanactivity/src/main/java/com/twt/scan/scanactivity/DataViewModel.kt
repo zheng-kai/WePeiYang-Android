@@ -46,7 +46,7 @@ object DataViewModel : ViewModel() {
 
     private suspend fun getDataBean(type: Int) {
 
-        val result = ScanActivityService.getActivitiesAsync(1, 20, type).await()
+        val result = ScanActivityService.getActivitiesAsync(1,  type).await()
         if (result.error_code == 0) {
             when (type) {
                 FINISHED_ACTIVITY -> homeBeanJoinedLiveData.value = homeBeanJoinedLiveData.value
