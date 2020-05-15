@@ -46,23 +46,41 @@ object DataViewModel : ViewModel() {
 
     private suspend fun getDataBean(type: Int) {
 
-        val result = ScanActivityService.getActivitiesAsync(1,  type).await()
-        if (result.error_code == 0) {
-            when (type) {
-                FINISHED_ACTIVITY -> homeBeanJoinedLiveData.value = homeBeanJoinedLiveData.value
-                        ?.plus(result.data?.details?.toTypedArray() ?: arrayOf())
-                MANAGER_ACTIVITY -> managerBeanLiveData.value = managerBeanLiveData.value
-                        ?.plus(result.data?.details?.toTypedArray() ?: arrayOf())
-                DOING_ACTIVITY -> homeBeanNotJoinLiveData.value = homeBeanNotJoinLiveData.value
-                        ?.plus(result.data?.details?.toTypedArray() ?: arrayOf())
+        val result = ScanActivityService.getActivitiesAsync(1, type).await()
+        GlobalScope.launch(Dispatchers.Main) {
+            if (result.error_code == 0) {
+                when (type) {
+                    FINISHED_ACTIVITY -> {
+                        homeBeanJoinedLiveData.value = homeBeanJoinedLiveData.value
+                                ?.plus(result.data?.data?.toTypedArray() ?: arrayOf())
+                                ?: ArrayList<Details>().apply {
+                                    addAll(result.data?.data?.toTypedArray() ?: arrayOf())
+                                }
+                    }
+                    MANAGER_ACTIVITY -> {
+                        managerBeanLiveData.value = managerBeanLiveData.value
+                                ?.plus(result.data?.data?.toTypedArray() ?: arrayOf())
+                                ?: ArrayList<Details>().apply {
+                                    addAll(result.data?.data?.toTypedArray() ?: arrayOf())
+                                }
+                    }
+                    DOING_ACTIVITY -> {
+                        homeBeanNotJoinLiveData.value = homeBeanNotJoinLiveData.value
+                                ?.plus(result.data?.data?.toTypedArray() ?: arrayOf())
+                                ?: ArrayList<Details>().apply {
+                                    addAll(result.data?.data?.toTypedArray() ?: arrayOf())
+                                }
+                    }
+                }
+                Toasty.normal(CommonContext.application, result.message).show()
+            } else {
+                Toasty.error(CommonContext.application, result.message).show()
             }
-            Toasty.normal(CommonContext.application, result.message)
-        } else {
-            Toasty.error(CommonContext.application, result.message)
         }
+
         // 假数据
-        managerBeanLiveData.value = listOf(Details(1, "content!", "1588882342", "1588892342", null, 0, 0, listOf(), 0, listOf(), "position", "title", "teacher"))
-        homeBeanJoinedLiveData.value = listOf(Details(1, "content!", "1588882342", "1588892342", null, 0, 0, listOf(), 0, listOf(), "position", "title", "teacher"))
+//        managerBeanLiveData.value = listOf(Details(1, "content!", "1588882342", "1588892342", null, 0, 0, listOf(), 0, listOf(), "position", "title", "teacher"))
+//        homeBeanJoinedLiveData.value = listOf(Details(1, "content!", "1588882342", "1588892342", null, 0, 0, listOf(), 0, listOf(), "position", "title", "teacher"))
 
     }
 }

@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import com.githang.statusbar.StatusBarCompat
 import com.twt.scan.scanactivity.DataViewModel
 import com.twt.scan.scanactivity.R
 import com.twt.scan.scanactivity.add
 import com.twt.wepeiyang.commons.ui.rec.withItems
 import com.twt.scan.scanactivity.api.Details
+import com.twt.scan.scanactivity.api.ScanActivityService
+import com.twt.wepeiyang.commons.experimental.extensions.QuietCoroutineExceptionHandler
 import kotlinx.android.synthetic.main.scanactivity_activity_home.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -25,12 +28,7 @@ class HomeActivity : AppCompatActivity() {
         iv_home_back.setOnClickListener {
             onBackPressed()
         }
-        DataViewModel.apply {
-            GlobalScope.launch(Dispatchers.Main) {
-                getAllBean()
 
-            }
-        }
         vp_home.apply {
             this.offscreenPageLimit = 2
             adapter = HomeFragmentPagerAdapter(supportFragmentManager,
@@ -39,7 +37,14 @@ class HomeActivity : AppCompatActivity() {
                             HomeFragment.newInstance(HomeTitle.JOINED_TITLE)))
         }
         tl_home.setupWithViewPager(vp_home)
+        DataViewModel.apply {
+            GlobalScope.launch(Dispatchers.IO + QuietCoroutineExceptionHandler) {
+                val result = ScanActivityService.login().await()
+                Log.d("result",result.message)
+                getAllBean()
 
+            }
+        }
     }
 
     private fun formatDate(start: String, end: String): String {

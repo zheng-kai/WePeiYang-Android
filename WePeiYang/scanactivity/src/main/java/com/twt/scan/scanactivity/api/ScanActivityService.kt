@@ -51,7 +51,7 @@ data class LoginBean(
 
 data class ActivityBean(
         val currentPage: Int,//当前页数
-        val details: List<Details>,
+        val data: List<Details>,
         val lastPage: Int,//最后一页的页数
         val number: Int//活动的总数量
 )
