@@ -36,31 +36,39 @@ class HomeFragment : Fragment() {
         val view = inflater.inflate(R.layout.scanactivity_fragment_home, container, false)
         view.rv_home_fragment.layoutManager = LinearLayoutManager(CommonContext.application)
         view.srl_home_fragment.setOnRefreshListener {
-            GlobalScope.launch (Dispatchers.Main){
-                if(title == MANAGER_TITLE){
-                    ScanActivityService.checkManager(CommonPreferences.studentid).await()
-                }
+            GlobalScope.launch(Dispatchers.Main) {
                 DataViewModel.getBean(title)
                 view.srl_home_fragment.isRefreshing = false
             }
         }
-        DataViewModel.getLiveData(title).bindNonNull(this.activity!!){
-            when(title){
-                MANAGER_TITLE->{
-                    view.rv_home_fragment.withItems {
-                        it?.forEach { it ->
-                            add(it.title, it.position, formatDate(it.start, it.end), it.teacher, it.activity_id)
+        DataViewModel.getLiveData(title).bindNonNull(this.activity!!) {
+            it?.let {
+                if (it.isNotEmpty()) {
+                    view.rv_home_fragment.visibility = View.VISIBLE
+                    view.tv_home_fragment_loading.visibility = View.INVISIBLE
+                    when (title) {
+                        MANAGER_TITLE -> {
+                            view.rv_home_fragment.withItems {
+                                it.forEach { it ->
+                                    add(it.title, it.position, formatDate(it.start, it.end), it.teacher, it.activity_id)
+                                }
+                            }
+                        }
+                        else -> {
+                            view.rv_home_fragment.withItems {
+                                it.forEach { it ->
+                                    add(it.title, it.position, formatDate(it.start, it.end), it.teacher)
+                                }
+                            }
                         }
                     }
+                } else {
+                    view.rv_home_fragment.visibility = View.INVISIBLE
+                    view.tv_home_fragment_loading.visibility = View.VISIBLE
                 }
-                else->{
-                    view.rv_home_fragment.withItems {
-                        it?.forEach { it ->
-                            add(it.title, it.position, formatDate(it.start, it.end),it.teacher)
-                        }
-                    }
-                }
+
             }
+
 
         }
 

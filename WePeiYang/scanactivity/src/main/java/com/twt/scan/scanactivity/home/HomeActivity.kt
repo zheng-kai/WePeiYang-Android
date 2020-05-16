@@ -41,6 +41,7 @@ class HomeActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.IO + QuietCoroutineExceptionHandler) {
             val info = ScanActivityService.getUserInfo().await()
             ScanPreferences.twtid = info.data?.user_id
+            ScanPreferences.permissionLevel = info.data?.permission
         }
         GlobalScope.launch(Dispatchers.IO + QuietCoroutineExceptionHandler) {
             DataViewModel.apply {
