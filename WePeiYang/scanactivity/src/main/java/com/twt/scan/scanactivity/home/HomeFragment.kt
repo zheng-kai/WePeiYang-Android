@@ -45,7 +45,7 @@ class HomeFragment : Fragment() {
             override fun loadMore() {
                 GlobalScope.launch(Main) {
                     DataViewModel.getBeanMore(title)
-
+                    enable()
                 }
             }
         })
