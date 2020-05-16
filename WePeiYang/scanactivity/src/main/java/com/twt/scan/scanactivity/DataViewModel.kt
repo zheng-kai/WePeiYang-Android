@@ -7,17 +7,16 @@ import com.twt.scan.scanactivity.api.Details
 import com.twt.scan.scanactivity.api.ScanActivityService
 import com.twt.scan.scanactivity.home.HomeTitle
 import com.twt.wepeiyang.commons.experimental.CommonContext
-import com.twt.wepeiyang.commons.experimental.extensions.QuietCoroutineExceptionHandler
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 
 object DataViewModel : ViewModel() {
     const val DOING_ACTIVITY = 0
     const val FINISHED_ACTIVITY = 1
     const val MANAGER_ACTIVITY = 2
-
+    private val pageMap = HashMap<Int, Int>()
     private val managerBeanLiveData = MutableLiveData<List<Details>>()
     private val homeBeanJoinedLiveData = MutableLiveData<List<Details>>()
     private val homeBeanNotJoinLiveData = MutableLiveData<List<Details>>()
@@ -30,25 +29,102 @@ object DataViewModel : ViewModel() {
 
     }
 
-    suspend fun getBean(type: HomeTitle) {
-        when (type) {
-            HomeTitle.JOINED_TITLE -> getDataBean(FINISHED_ACTIVITY)
-            HomeTitle.NOT_JOINED_TITLE -> getDataBean(DOING_ACTIVITY)
-            HomeTitle.MANAGER_TITLE -> getDataBean(MANAGER_ACTIVITY)
+    suspend fun refreshBean(type: HomeTitle): Boolean {
+        return when (type) {
+            HomeTitle.JOINED_TITLE -> {
+                val result = refreshDataBean(FINISHED_ACTIVITY)
+                if (result) {
+                    pageMap[0] = 1
+                }
+                result
+            }
+            HomeTitle.NOT_JOINED_TITLE -> {
+                val result = refreshDataBean(DOING_ACTIVITY)
+                if (result) {
+                    pageMap[1] = 1
+                }
+                result
+            }
+            HomeTitle.MANAGER_TITLE -> {
+                val result = refreshDataBean(MANAGER_ACTIVITY)
+                if (result) {
+                    pageMap[2] = 1
+                }
+                result
+            }
         }
     }
 
-    suspend fun getAllBean() {
-        getDataBean(FINISHED_ACTIVITY)
-        getDataBean(DOING_ACTIVITY)
-        getDataBean(MANAGER_ACTIVITY)
+    private suspend fun refreshDataBean(type: Int): Boolean {
+        val result = withContext(IO) {
+            ScanActivityService.getActivitiesAsync(1, type).await()
+        }
+        Log.d("result", result.message)
+
+        if (result.error_code == 0) {
+            withContext(Main) {
+                when (type) {
+                    FINISHED_ACTIVITY -> {
+                        homeBeanJoinedLiveData.value = ArrayList<Details>().apply {
+                            addAll(result.data?.data?.toTypedArray() ?: arrayOf())
+                        }
+                    }
+                    MANAGER_ACTIVITY -> {
+                        managerBeanLiveData.value = ArrayList<Details>().apply {
+                            addAll(result.data?.data?.toTypedArray() ?: arrayOf())
+                        }
+                    }
+                    DOING_ACTIVITY -> {
+                        homeBeanNotJoinLiveData.value = ArrayList<Details>().apply {
+                            addAll(result.data?.data?.toTypedArray() ?: arrayOf())
+                        }
+                    }
+                }
+            }
+            return true
+
+        }
+        return false
+
     }
 
-    private suspend fun getDataBean(type: Int) {
+    suspend fun getBeanMore(type: HomeTitle) {
+        when (type) {
+            HomeTitle.JOINED_TITLE -> {
+                if (getDataBeanMore(FINISHED_ACTIVITY)) {
+                    pageMap[FINISHED_ACTIVITY] = pageMap[FINISHED_ACTIVITY] ?: 0 + 1
+                }
+            }
+            HomeTitle.NOT_JOINED_TITLE -> {
+                if (getDataBeanMore(DOING_ACTIVITY)) {
+                    pageMap[DOING_ACTIVITY] = pageMap[DOING_ACTIVITY] ?: 0 + 1
+                }
+            }
+            HomeTitle.MANAGER_TITLE -> {
+                if (getDataBeanMore(MANAGER_ACTIVITY)) {
+                    pageMap[MANAGER_ACTIVITY] = pageMap[MANAGER_ACTIVITY] ?: 0 + 1
+                }
+            }
+        }
+    }
 
-        val result = ScanActivityService.getActivitiesAsync(1, type).await()
-        GlobalScope.launch(Dispatchers.Main) {
-            if (result.error_code == 0) {
+    suspend fun getAllBeanInit() {
+
+        refreshBean(HomeTitle.NOT_JOINED_TITLE)
+        refreshBean(HomeTitle.MANAGER_TITLE)
+        refreshBean(HomeTitle.JOINED_TITLE)
+
+    }
+
+    private suspend fun getDataBeanMore(type: Int): Boolean {
+        pageMap[type] = pageMap[type] ?: 0 + 1
+        val page = pageMap[type] as Int
+        val result = withContext(IO) {
+            ScanActivityService.getActivitiesAsync(page, type).await()
+        }
+
+        if (result.error_code == 0) {
+            withContext(Main) {
                 when (type) {
                     FINISHED_ACTIVITY -> {
                         homeBeanJoinedLiveData.value = homeBeanJoinedLiveData.value
@@ -72,11 +148,14 @@ object DataViewModel : ViewModel() {
                                 }
                     }
                 }
-                Toasty.normal(CommonContext.application, result.message).show()
-            } else {
-                Toasty.error(CommonContext.application, result.message).show()
             }
+            Toasty.normal(CommonContext.application, result.message).show()
+            return true
+        } else {
+            Toasty.error(CommonContext.application, result.message).show()
+            return false
         }
+
 
         // 假数据
 //        managerBeanLiveData.value = listOf(Details(1, "content!", "1588882342", "1588892342", null, 0, 0, listOf(), 0, listOf(), "position", "title", "teacher"))

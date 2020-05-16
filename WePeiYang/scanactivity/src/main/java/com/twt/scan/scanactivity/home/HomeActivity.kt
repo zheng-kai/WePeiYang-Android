@@ -47,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
             DataViewModel.apply {
 //                val result = ScanActivityService.login().await()
 //                Log.d("result",result.message)
-                getAllBean()
+                getAllBeanInit()
             }
         }
     }
