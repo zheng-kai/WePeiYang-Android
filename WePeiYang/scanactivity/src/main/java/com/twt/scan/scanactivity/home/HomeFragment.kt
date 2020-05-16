@@ -44,6 +44,7 @@ class HomeFragment : Fragment() {
         DataViewModel.getLiveData(title).bindNonNull(this.activity!!) {
             it?.let {
                 if (it.isNotEmpty()) {
+                    view.tv_home_fragment_loading.text = "正在加载"
                     view.rv_home_fragment.visibility = View.VISIBLE
                     view.tv_home_fragment_loading.visibility = View.INVISIBLE
                     when (title) {
@@ -63,6 +64,7 @@ class HomeFragment : Fragment() {
                         }
                     }
                 } else {
+                    view.tv_home_fragment_loading.text = "无活动"
                     view.rv_home_fragment.visibility = View.INVISIBLE
                     view.tv_home_fragment_loading.visibility = View.VISIBLE
                 }
