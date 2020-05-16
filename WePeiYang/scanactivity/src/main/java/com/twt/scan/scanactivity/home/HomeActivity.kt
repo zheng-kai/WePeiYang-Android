@@ -12,6 +12,7 @@ import com.twt.scan.scanactivity.add
 import com.twt.wepeiyang.commons.ui.rec.withItems
 import com.twt.scan.scanactivity.api.Details
 import com.twt.scan.scanactivity.api.ScanActivityService
+import com.twt.scan.scanactivity.api.ScanPreferences
 import com.twt.wepeiyang.commons.experimental.extensions.QuietCoroutineExceptionHandler
 import kotlinx.android.synthetic.main.scanactivity_activity_home.*
 import kotlinx.coroutines.Dispatchers
@@ -37,12 +38,15 @@ class HomeActivity : AppCompatActivity() {
                             HomeFragment.newInstance(HomeTitle.JOINED_TITLE)))
         }
         tl_home.setupWithViewPager(vp_home)
-        DataViewModel.apply {
-            GlobalScope.launch(Dispatchers.IO + QuietCoroutineExceptionHandler) {
-                val result = ScanActivityService.login().await()
-                Log.d("result",result.message)
+        GlobalScope.launch(Dispatchers.IO + QuietCoroutineExceptionHandler) {
+            val info = ScanActivityService.getUserInfo().await()
+            ScanPreferences.twtid = info.data?.user_id
+        }
+        GlobalScope.launch(Dispatchers.IO + QuietCoroutineExceptionHandler) {
+            DataViewModel.apply {
+//                val result = ScanActivityService.login().await()
+//                Log.d("result",result.message)
                 getAllBean()
-
             }
         }
     }
@@ -52,7 +56,7 @@ class HomeActivity : AppCompatActivity() {
         val calendar = Calendar.getInstance().apply {
             timeInMillis = start.toLong() * 1000
         }
-        val simple2 = SimpleDateFormat("-HH:mm")
+        val simple2 = SimpleDateFormat("\nyyyy年MM月dd日-HH:mm")
         val calendar2 = Calendar.getInstance().apply {
             timeInMillis = end.toLong() * 1000
         }

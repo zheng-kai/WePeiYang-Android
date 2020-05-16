@@ -5,7 +5,6 @@
     >
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:focusableInTouchMode="true"
         android:id="@+id/srl_home_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

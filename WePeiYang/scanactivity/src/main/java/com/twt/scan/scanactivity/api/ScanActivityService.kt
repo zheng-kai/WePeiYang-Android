@@ -14,34 +14,44 @@ const val BASE_URL = "https://activity.twt.edu.cn/api/"
 interface ScanActivityService {
 
     @GET("${BASE_URL}openLogin")
-    fun login(@Query("twtid") twtId: String = CommonPreferences.twtuname): Deferred<CommonBody<LoginBean>>
+    fun login(@Query("twtid") twtId: Int? = ScanPreferences.twtid): Deferred<CommonBody<LoginBean>>
 
     @POST("${BASE_URL}QrCode/scan")
     fun sign(
             @Query("activity_id") activity_id: Int,
             @Query("student_number") student_number: String,
             @Query("time") time: Int,
-            @Query("twtid") twtId: String = CommonPreferences.twtuname): Deferred<CommonBody<Any>>
+            @Query("twtid") twtId: Int? = ScanPreferences.twtid): Deferred<CommonBody<Any>>
 
     @GET("${BASE_URL}activity/index")
     fun getActivitiesAsync(
             @Query("page") page: Int,
             @Query("method") method: Int,
             @Query("limit") limit: Int = 10,
-            @Query("twtid") twtId: String = CommonPreferences.twtuname): Deferred<CommonBody<ActivityBean>>
+            @Query("twtid") twtId: Int? = ScanPreferences.twtid
+    ): Deferred<CommonBody<ActivityBean>>
 
     @GET("${BASE_URL}user/register/checkManager")
     fun checkManager(
             @Query("user_id") user_id: String,
-            @Query("twtid") twtId: String = CommonPreferences.twtuname): Deferred<CommonBody<Any>>
+            @Query("twtid") twtId: Int? = ScanPreferences.twtid): Deferred<CommonBody<Any>>
 
     @GET("${BASE_URL}user/getNameByNumber")
     fun getNameByNumber(
             @Query("student_number") student_number: String,
-            @Query("twtid") twtId: String = CommonPreferences.twtuname): Deferred<CommonBody<String>>
+            @Query("twtid") twtId: Int? = ScanPreferences.twtid): Deferred<CommonBody<String>>
+
+    @GET("${BASE_URL}user/info")
+    fun getUserInfo(): Deferred<CommonBody<UserInfoBean>>
 
     companion object : ScanActivityService by ServiceFactory()
 }
+
+data class UserInfoBean(
+        val permission: Int,
+        val token: List<String>,
+        val user_id: Int
+)
 
 data class LoginBean(
         val permission: Int,
