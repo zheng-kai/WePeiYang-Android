@@ -2,6 +2,7 @@ package com.twt.scan.scanactivity
 
 import android.content.Intent
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -15,9 +16,11 @@ import com.twt.scan.scanactivity.sign.SignActivity
 import com.twt.wepeiyang.commons.experimental.CommonContext
 import com.twt.wepeiyang.commons.ui.rec.Item
 import com.twt.wepeiyang.commons.ui.rec.ItemController
+import kotlinx.android.synthetic.main.scanactivity_item_footer.view.*
 import kotlinx.android.synthetic.main.scanactivity_item_home.view.*
 import kotlinx.android.synthetic.main.scanactivity_item_manager.view.*
 import org.jetbrains.anko.layoutInflater
+import org.jetbrains.anko.wrapContent
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -47,15 +50,15 @@ class HomeItem(val title: String, val location: String, val time: String, val pe
         }
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: Item) {
-            holder as ViewHolder
-            item as HomeItem
-            val locationStr = "活动地点：${item.location}"
-            val timeStr = "活动时间：${item.time}"
-            val personStr = "发起人：${item.person}"
-            holder.tvTitle.text = item.title
-            holder.tvLocation.text = locationStr
-            holder.tvTime.text = timeStr
-            holder.tvPerson.text = personStr
+            if (holder is ViewHolder && item is HomeItem) {
+                val locationStr = "活动地点：${item.location}"
+                val timeStr = "活动时间：${item.time}"
+                val personStr = "发起人：${item.person}"
+                holder.tvTitle.text = item.title
+                holder.tvLocation.text = locationStr
+                holder.tvTime.text = timeStr
+                holder.tvPerson.text = personStr
+            }
         }
 
     }
@@ -99,27 +102,28 @@ class ManagerItem(val title: String, val location: String, val time: String, val
         }
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: Item) {
-            holder as ViewHolder
-            item as ManagerItem
-            val locationStr = "活动地点：${item.location}"
-            val timeStr = "活动时间：${item.time}"
-            val personStr = "发起人：${item.person}"
-            holder.tvTitle.text = item.title
-            holder.llDetail.tv_manager_detail_location.text = locationStr
-            holder.llDetail.tv_manager_detail_time.text = timeStr
-            holder.llDetail.tv_manager_detail_initiator.text = personStr
 
-            holder.llIdSign.setOnClickListener {
-                val intent = Intent(CommonContext.application, SignActivity::class.java)
-                intent.putExtra("fragmentType", "Type")
-                intent.putExtra("activityId", item.id)
-                CommonContext.application.startActivity(intent)
-            }
-            holder.llScanSign.setOnClickListener {
-                val intent = Intent(CommonContext.application, SignActivity::class.java)
-                intent.putExtra("fragmentType", "Scan")
-                intent.putExtra("activityId", item.id)
-                CommonContext.application.startActivity(intent)
+            if (holder is ViewHolder && item is ManagerItem) {
+                val locationStr = "活动地点：${item.location}"
+                val timeStr = "活动时间：${item.time}"
+                val personStr = "发起人：${item.person}"
+                holder.tvTitle.text = item.title
+                holder.llDetail.tv_manager_detail_location.text = locationStr
+                holder.llDetail.tv_manager_detail_time.text = timeStr
+                holder.llDetail.tv_manager_detail_initiator.text = personStr
+
+                holder.llIdSign.setOnClickListener {
+                    val intent = Intent(CommonContext.application, SignActivity::class.java)
+                    intent.putExtra("fragmentType", "Type")
+                    intent.putExtra("activityId", item.id)
+                    CommonContext.application.startActivity(intent)
+                }
+                holder.llScanSign.setOnClickListener {
+                    val intent = Intent(CommonContext.application, SignActivity::class.java)
+                    intent.putExtra("fragmentType", "Scan")
+                    intent.putExtra("activityId", item.id)
+                    CommonContext.application.startActivity(intent)
+                }
             }
         }
 
@@ -134,6 +138,26 @@ class ManagerItem(val title: String, val location: String, val time: String, val
 
     override val controller: ItemController
         get() = Controller
+}
+
+class Footer(val content: String) : Item {
+    companion object Companion : ItemController {
+        override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+            val view = parent.context.layoutInflater.inflate(R.layout.scanactivity_item_footer, parent, false)
+            return MyViewHolder(view, view.tv_item_footer)
+        }
+
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: Item) {
+            if (holder is MyViewHolder && item is Footer) {
+                holder.tvContent.text = item.content
+            }
+        }
+
+    }
+
+    private class MyViewHolder(itemView: View, val tvContent: TextView) : RecyclerView.ViewHolder(itemView)
+
+    override val controller: ItemController = Companion
 }
 
 fun MutableList<Item>.addNormalActivity(normalActivityId: Int, title: String?, location: String?, time: String?, teacher: String?) = add(HomeItem(title

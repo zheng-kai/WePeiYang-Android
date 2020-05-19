@@ -156,9 +156,6 @@ object DataViewModel : ViewModel() {
         }
 
 
-        // 假数据
-//        managerBeanLiveData.value = listOf(Details(1, "content!", "1588882342", "1588892342", null, 0, 0, listOf(), 0, listOf(), "position", "title", "teacher"))
-//        homeBeanJoinedLiveData.value = listOf(Details(1, "content!", "1588882342", "1588892342", null, 0, 0, listOf(), 0, listOf(), "position", "title", "teacher"))
 
     }
 }
