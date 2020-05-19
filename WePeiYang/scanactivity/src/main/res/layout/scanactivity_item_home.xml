@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="18dp"
-    android:layout_marginEnd="18dp"
     android:layout_marginTop="20dp"
+    android:layout_marginEnd="18dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="2dp">
 
@@ -14,8 +14,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingStart="24dp"
-        android:paddingEnd="0dp"
         android:paddingTop="22dp"
+        android:paddingEnd="0dp"
         android:paddingBottom="23dp">
 
         <TextView
@@ -26,33 +26,84 @@
             android:textColor="@color/scanActivityBlack"
             android:textSize="17sp" />
 
-
-        <TextView
-            android:id="@+id/tv_home_location"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="活动地点："
-            android:textColor="@color/scanActivityBlack"
-            android:textSize="15sp" />
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tv_home_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="13dp"
-            android:text="活动时间："
-            android:textColor="@color/scanActivityBlack"
-            android:textSize="15sp" />
+            <TextView
+                android:id="@+id/tv_tag_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="活动地点："
+                android:textColor="@color/scanActivityBlack"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_home_person"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="13dp"
-            android:text="发起人:"
-            android:textColor="@color/scanActivityBlack"
-            android:textSize="15sp" />
+            <TextView
+                android:id="@+id/tv_home_location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="55教学楼"
+                android:textColor="@color/scanActivityBlack"
+                android:textSize="15sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_tag_location"
+                app:layout_constraintTop_toTopOf="@+id/tv_tag_location" />
+
+
+            <TextView
+                android:id="@+id/tv_tag_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:text="活动时间："
+                android:textColor="@color/scanActivityBlack"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="@+id/tv_tag_location"
+                app:layout_constraintTop_toBottomOf="@+id/tv_tag_location" />
+
+            <TextView
+                android:id="@+id/tv_home_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="2020年5月19日"
+                android:textColor="@color/scanActivityBlack"
+                android:textSize="15sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_tag_time"
+                app:layout_constraintTop_toTopOf="@id/tv_tag_time" />
+
+
+            <TextView
+                android:id="@+id/tv_tag_person"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:text="发起人:"
+                android:textColor="@color/scanActivityBlack"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="@+id/tv_tag_time"
+                app:layout_constraintTop_toBottomOf="@+id/tv_tag_time" />
+
+            <TextView
+                android:id="@+id/tv_home_person"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="李老师"
+                android:textColor="@color/scanActivityBlack"
+                android:textSize="15sp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_tag_person"
+                app:layout_constraintTop_toTopOf="@id/tv_tag_person" />
+
+        </android.support.constraint.ConstraintLayout>
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

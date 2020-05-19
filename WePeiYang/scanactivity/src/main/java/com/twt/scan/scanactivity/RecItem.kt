@@ -1,15 +1,10 @@
 package com.twt.scan.scanactivity
 
 import android.content.Intent
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.view.animation.LinearInterpolator
-import android.view.animation.RotateAnimation
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.twt.scan.scanactivity.sign.SignActivity
@@ -20,7 +15,6 @@ import kotlinx.android.synthetic.main.scanactivity_item_footer.view.*
 import kotlinx.android.synthetic.main.scanactivity_item_home.view.*
 import kotlinx.android.synthetic.main.scanactivity_item_manager.view.*
 import org.jetbrains.anko.layoutInflater
-import org.jetbrains.anko.wrapContent
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -51,9 +45,9 @@ class HomeItem(val title: String, val location: String, val time: String, val pe
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: Item) {
             if (holder is ViewHolder && item is HomeItem) {
-                val locationStr = "活动地点：${item.location}"
-                val timeStr = "活动时间：${item.time}"
-                val personStr = "发起人：${item.person}"
+                val locationStr = item.location
+                val timeStr = item.time
+                val personStr = item.person
                 holder.tvTitle.text = item.title
                 holder.tvLocation.text = locationStr
                 holder.tvTime.text = timeStr
@@ -97,20 +91,20 @@ class ManagerItem(val title: String, val location: String, val time: String, val
             val tvTitle = view.tv_manager_item_title
             val llScanSign = view.ll_manager_item_scan_sign
             val llIdSign = view.ll_manager_item_id_sign
-            val llDetail = view.ll_manager_item_detail
+            val llDetail = view.cl_manager_item_detail
             return ViewHolder(view, tvTitle, llScanSign, llIdSign, llDetail)
         }
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: Item) {
 
             if (holder is ViewHolder && item is ManagerItem) {
-                val locationStr = "活动地点：${item.location}"
-                val timeStr = "活动时间：${item.time}"
-                val personStr = "发起人：${item.person}"
+                val locationStr = item.location
+                val timeStr = item.time
+                val personStr = item.person
                 holder.tvTitle.text = item.title
-                holder.llDetail.tv_manager_detail_location.text = locationStr
-                holder.llDetail.tv_manager_detail_time.text = timeStr
-                holder.llDetail.tv_manager_detail_initiator.text = personStr
+                holder.clDetail.tv_manager_detail_location.text = locationStr
+                holder.clDetail.tv_manager_detail_time.text = timeStr
+                holder.clDetail.tv_manager_detail_initiator.text = personStr
 
                 holder.llIdSign.setOnClickListener {
                     val intent = Intent(CommonContext.application, SignActivity::class.java)
@@ -134,7 +128,7 @@ class ManagerItem(val title: String, val location: String, val time: String, val
             val tvTitle: TextView,
             val llScanSign: LinearLayout,
             val llIdSign: LinearLayout,
-            val llDetail: LinearLayout) : RecyclerView.ViewHolder(itemView)
+            val clDetail: ConstraintLayout) : RecyclerView.ViewHolder(itemView)
 
     override val controller: ItemController
         get() = Controller
