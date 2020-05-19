@@ -59,7 +59,7 @@ class HomeFragment : Fragment() {
             }
         }
         DataViewModel.getLiveData(title).bindNonNull(this.activity!!) {
-            Log.d("result",it.toString())
+            Log.d("result", it.toString())
             it?.let {
                 if (it.isNotEmpty()) {
                     view.tv_home_fragment_loading.text = "正在加载"
@@ -71,12 +71,22 @@ class HomeFragment : Fragment() {
                                 it.forEach { it ->
                                     addManagerActivity(it.title, it.position, formatDate(it.start, it.end), it.teacher, it.activity_id)
                                 }
+                                if (DataViewModel.isPageEnd(title)) {
+                                    addFooter("没有更多了")
+                                } else {
+                                    addFooter("正在加载")
+                                }
                             }
                         }
                         else -> {
                             view.rv_home_fragment.refreshAll {
                                 it.forEach { it ->
-                                    addNormalActivity(it.activity_id,it.title, it.position, formatDate(it.start, it.end), it.teacher)
+                                    addNormalActivity(it.activity_id, it.title, it.position, formatDate(it.start, it.end), it.teacher)
+                                }
+                                if (DataViewModel.isPageEnd(title)) {
+                                    addFooter("没有更多了")
+                                } else {
+                                    addFooter("正在加载")
                                 }
                             }
                         }

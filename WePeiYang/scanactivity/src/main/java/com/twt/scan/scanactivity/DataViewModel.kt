@@ -17,6 +17,7 @@ object DataViewModel : ViewModel() {
     const val FINISHED_ACTIVITY = 1
     const val MANAGER_ACTIVITY = 2
     private val pageMap = HashMap<Int, Int>()
+    private val pageMaxMap = HashMap<Int, Int>()
     private val managerBeanLiveData = MutableLiveData<List<Details>>()
     private val homeBeanJoinedLiveData = MutableLiveData<List<Details>>()
     private val homeBeanNotJoinLiveData = MutableLiveData<List<Details>>()
@@ -27,6 +28,21 @@ object DataViewModel : ViewModel() {
             HomeTitle.MANAGER_TITLE -> managerBeanLiveData
         }
 
+    }
+
+    fun isPageEnd(type: HomeTitle): Boolean {
+        return when (type) {
+            HomeTitle.JOINED_TITLE -> {
+                pageMaxMap[FINISHED_ACTIVITY] ?: 1 <= pageMap[FINISHED_ACTIVITY] ?: 1
+            }
+            HomeTitle.NOT_JOINED_TITLE -> {
+                pageMaxMap[DOING_ACTIVITY] ?: 1 <= pageMap[DOING_ACTIVITY] ?: 1
+
+            }
+            HomeTitle.MANAGER_TITLE -> {
+                pageMaxMap[MANAGER_ACTIVITY] ?: 1 <= pageMap[MANAGER_ACTIVITY] ?: 1
+            }
+        }
     }
 
     suspend fun refreshBean(type: HomeTitle): Boolean {
@@ -61,6 +77,7 @@ object DataViewModel : ViewModel() {
         }
         Log.d("result", result.message)
 
+        pageMaxMap[type] = result.data?.number ?: 1
         if (result.error_code == 0) {
             withContext(Main) {
                 when (type) {
@@ -121,6 +138,7 @@ object DataViewModel : ViewModel() {
         val result = withContext(IO) {
             ScanActivityService.getActivitiesAsync(page, type).await()
         }
+        pageMaxMap[type] = result.data?.number ?: 1
 
         if (result.error_code == 0) {
             withContext(Main) {
@@ -154,7 +172,6 @@ object DataViewModel : ViewModel() {
             Toasty.error(CommonContext.application, result.message).show()
             return false
         }
-
 
 
     }

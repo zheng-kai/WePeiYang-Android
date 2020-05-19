@@ -141,9 +141,20 @@ class ManagerItem(val title: String, val location: String, val time: String, val
 }
 
 class Footer(val content: String) : Item {
+    override fun areContentsTheSame(newItem: Item): Boolean {
+        if (newItem is Footer) {
+            return content == newItem.content
+        }
+        return false
+    }
+
+    override fun areItemsTheSame(newItem: Item): Boolean {
+        return areContentsTheSame(newItem)
+    }
+
     companion object Companion : ItemController {
         override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-            val view = parent.context.layoutInflater.inflate(R.layout.scanactivity_item_footer, parent, false)
+            val view = CommonContext.application.layoutInflater.inflate(R.layout.scanactivity_item_footer, parent, false)
             return MyViewHolder(view, view.tv_item_footer)
         }
 
@@ -166,6 +177,7 @@ fun MutableList<Item>.addNormalActivity(normalActivityId: Int, title: String?, l
 fun MutableList<Item>.addManagerActivity(title: String?, position: String?, time: String?, teacher: String?, activityId: Int) = add(ManagerItem(title
         ?: "无", position ?: "未知", time ?: "待定", teacher ?: "无", activityId))
 
+fun MutableList<Item>.addFooter(content: String) = Footer(content)
 fun formatDate(start: String, end: String): String {
     val simple = SimpleDateFormat("yyyy年MM月dd日 HH:mm")
     val calendar = Calendar.getInstance().apply {
