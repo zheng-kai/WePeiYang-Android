@@ -39,8 +39,9 @@ class HomeFragment : Fragment() {
         view.rv_home_fragment.addOnScrollListener(object : EndlessScrollListener() {
             override fun loadMore() {
                 GlobalScope.launch(Main) {
-                    DataViewModel.getBeanMore(title)
-                    enable()
+                    if (!DataViewModel.isEnd(title)) {
+                        DataViewModel.getBeanMore(title)
+                    }
                 }
             }
         })
@@ -68,10 +69,11 @@ class HomeFragment : Fragment() {
                     when (title) {
                         MANAGER_TITLE -> {
                             view.rv_home_fragment.refreshAll {
+
                                 it.forEach { it ->
                                     addManagerActivity(it.title, it.position, formatDate(it.start, it.end), it.teacher, it.activity_id)
                                 }
-                                if (DataViewModel.isPageEnd(title)) {
+                                if (DataViewModel.isEnd(title)) {
                                     addFooter("没有更多了")
                                 } else {
                                     addFooter("正在加载")
@@ -80,10 +82,11 @@ class HomeFragment : Fragment() {
                         }
                         else -> {
                             view.rv_home_fragment.refreshAll {
+
                                 it.forEach { it ->
                                     addNormalActivity(it.activity_id, it.title, it.position, formatDate(it.start, it.end), it.teacher)
                                 }
-                                if (DataViewModel.isPageEnd(title)) {
+                                if (DataViewModel.isEnd(title)) {
                                     addFooter("没有更多了")
                                 } else {
                                     addFooter("正在加载")

@@ -16,8 +16,8 @@ object DataViewModel : ViewModel() {
     const val DOING_ACTIVITY = 0
     const val FINISHED_ACTIVITY = 1
     const val MANAGER_ACTIVITY = 2
-    private val pageMap = HashMap<Int, Int>()
-    private val pageMaxMap = HashMap<Int, Int>()
+    private val currentPageMap = HashMap<Int, Int>()
+    private val maxPageMap = HashMap<Int, Int>()
     private val managerBeanLiveData = MutableLiveData<List<Details>>()
     private val homeBeanJoinedLiveData = MutableLiveData<List<Details>>()
     private val homeBeanNotJoinLiveData = MutableLiveData<List<Details>>()
@@ -30,17 +30,17 @@ object DataViewModel : ViewModel() {
 
     }
 
-    fun isPageEnd(type: HomeTitle): Boolean {
+    fun isEnd(type: HomeTitle): Boolean {
         return when (type) {
             HomeTitle.JOINED_TITLE -> {
-                pageMaxMap[FINISHED_ACTIVITY] ?: 1 <= pageMap[FINISHED_ACTIVITY] ?: 1
+                maxPageMap[FINISHED_ACTIVITY] ?: 1 <= currentPageMap[FINISHED_ACTIVITY] ?: 1
             }
             HomeTitle.NOT_JOINED_TITLE -> {
-                pageMaxMap[DOING_ACTIVITY] ?: 1 <= pageMap[DOING_ACTIVITY] ?: 1
+                maxPageMap[DOING_ACTIVITY] ?: 1 <= currentPageMap[DOING_ACTIVITY] ?: 1
 
             }
             HomeTitle.MANAGER_TITLE -> {
-                pageMaxMap[MANAGER_ACTIVITY] ?: 1 <= pageMap[MANAGER_ACTIVITY] ?: 1
+                maxPageMap[MANAGER_ACTIVITY] ?: 1 <= currentPageMap[MANAGER_ACTIVITY] ?: 1
             }
         }
     }
@@ -48,25 +48,13 @@ object DataViewModel : ViewModel() {
     suspend fun refreshBean(type: HomeTitle): Boolean {
         return when (type) {
             HomeTitle.JOINED_TITLE -> {
-                val result = refreshDataBean(FINISHED_ACTIVITY)
-                if (result) {
-                    pageMap[FINISHED_ACTIVITY] = 1
-                }
-                result
+                refreshDataBean(FINISHED_ACTIVITY)
             }
             HomeTitle.NOT_JOINED_TITLE -> {
-                val result = refreshDataBean(DOING_ACTIVITY)
-                if (result) {
-                    pageMap[DOING_ACTIVITY] = 1
-                }
-                result
+                refreshDataBean(DOING_ACTIVITY)
             }
             HomeTitle.MANAGER_TITLE -> {
-                val result = refreshDataBean(MANAGER_ACTIVITY)
-                if (result) {
-                    pageMap[MANAGER_ACTIVITY] = 1
-                }
-                result
+                refreshDataBean(MANAGER_ACTIVITY)
             }
         }
     }
@@ -77,8 +65,9 @@ object DataViewModel : ViewModel() {
         }
         Log.d("result", result.message)
 
-        pageMaxMap[type] = result.data?.number ?: 1
         if (result.error_code == 0) {
+            maxPageMap[type] = result.data?.lastPage ?: 1
+            currentPageMap[type] = result.data?.currentPage ?: 1 // 在livedata改变之前 改变页号
             withContext(Main) {
                 when (type) {
                     FINISHED_ACTIVITY -> {
@@ -107,19 +96,16 @@ object DataViewModel : ViewModel() {
     suspend fun getBeanMore(type: HomeTitle) {
         when (type) {
             HomeTitle.JOINED_TITLE -> {
-                if (getDataBeanMore(FINISHED_ACTIVITY)) {
-                    pageMap[FINISHED_ACTIVITY] = (pageMap[FINISHED_ACTIVITY] ?: 0) + 1
-                }
+                getDataBeanMore(FINISHED_ACTIVITY)
+
             }
             HomeTitle.NOT_JOINED_TITLE -> {
-                if (getDataBeanMore(DOING_ACTIVITY)) {
-                    pageMap[DOING_ACTIVITY] = (pageMap[DOING_ACTIVITY] ?: 0) + 1
-                }
+                getDataBeanMore(DOING_ACTIVITY)
+
             }
             HomeTitle.MANAGER_TITLE -> {
-                if (getDataBeanMore(MANAGER_ACTIVITY)) {
-                    pageMap[MANAGER_ACTIVITY] = (pageMap[MANAGER_ACTIVITY] ?: 0) + 1
-                }
+                getDataBeanMore(MANAGER_ACTIVITY)
+
             }
         }
     }
@@ -133,14 +119,14 @@ object DataViewModel : ViewModel() {
     }
 
     private suspend fun getDataBeanMore(type: Int): Boolean {
-        pageMap[type] = pageMap[type] ?: 0 + 1
-        val page = pageMap[type] as Int
+        val page = currentPageMap[type] as Int + 1
         val result = withContext(IO) {
             ScanActivityService.getActivitiesAsync(page, type).await()
         }
-        pageMaxMap[type] = result.data?.number ?: 1
 
         if (result.error_code == 0) {
+            maxPageMap[type] = result.data?.lastPage ?: 1
+            currentPageMap[type] = result.data?.currentPage ?: 1
             withContext(Main) {
                 when (type) {
                     FINISHED_ACTIVITY -> {

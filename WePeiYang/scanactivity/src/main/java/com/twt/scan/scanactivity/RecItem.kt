@@ -141,6 +141,7 @@ class ManagerItem(val title: String, val location: String, val time: String, val
 }
 
 class Footer(val content: String) : Item {
+    private var loadable = true;
     override fun areContentsTheSame(newItem: Item): Boolean {
         if (newItem is Footer) {
             return content == newItem.content
@@ -161,7 +162,15 @@ class Footer(val content: String) : Item {
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: Item) {
             if (holder is MyViewHolder && item is Footer) {
                 holder.tvContent.text = item.content
+//                holder.tvContent.setOnClickListener {
+//                    if (item.loadable) {
+//                        item.loadable = false
+//                        holder.tvContent.text = "正在加载"
+//                        DataViewModel.getBeanMore(title)
+//                    }
+//                }
             }
+
         }
 
     }
@@ -177,7 +186,8 @@ fun MutableList<Item>.addNormalActivity(normalActivityId: Int, title: String?, l
 fun MutableList<Item>.addManagerActivity(title: String?, position: String?, time: String?, teacher: String?, activityId: Int) = add(ManagerItem(title
         ?: "无", position ?: "未知", time ?: "待定", teacher ?: "无", activityId))
 
-fun MutableList<Item>.addFooter(content: String) = Footer(content)
+fun MutableList<Item>.addFooter(content: String) = add(Footer(content))
+
 fun formatDate(start: String, end: String): String {
     val simple = SimpleDateFormat("yyyy年MM月dd日 HH:mm")
     val calendar = Calendar.getInstance().apply {

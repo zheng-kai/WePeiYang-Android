@@ -8,6 +8,7 @@ import com.twt.scan.scanactivity.DataViewModel
 import com.twt.scan.scanactivity.R
 import com.twt.scan.scanactivity.api.ScanActivityService
 import com.twt.scan.scanactivity.api.ScanPreferences
+import com.twt.wepeiyang.commons.experimental.extensions.QuietCoroutineExceptionHandler
 import kotlinx.android.synthetic.main.scanactivity_activity_home.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -32,12 +33,12 @@ class HomeActivity : AppCompatActivity() {
                             HomeFragment.newInstance(HomeTitle.JOINED_TITLE)))
         }
         tl_home.setupWithViewPager(vp_home)
-        GlobalScope.launch(Dispatchers.IO) {
+        GlobalScope.launch(Dispatchers.IO+ QuietCoroutineExceptionHandler) {
             val info = ScanActivityService.getUserInfo().await()
             ScanPreferences.twtid = info.data?.user_id
             ScanPreferences.permissionLevel = info.data?.permission
         }
-        GlobalScope.launch(Dispatchers.IO ) {
+        GlobalScope.launch(Dispatchers.IO+ QuietCoroutineExceptionHandler ) {
             DataViewModel.apply {
 //                val result = ScanActivityService.login().await()
 //                Log.d("result",result.message)
