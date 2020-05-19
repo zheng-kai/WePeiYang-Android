@@ -193,13 +193,13 @@ fun formatDate(start: String, end: String): String {
         timeZone = TimeZone.getTimeZone("GMT+8")
     }
     val calendar = Calendar.getInstance().apply {
-        timeInMillis = start.toLong()
+        timeInMillis = start.toLong() * 1000
     }
     val simple2 = SimpleDateFormat("\n-yyyy年MM月dd日HH:mm").apply {
         timeZone = TimeZone.getTimeZone("GMT+8")
     }
     val calendar2 = Calendar.getInstance().apply {
-        timeInMillis = end.toLong()
+        timeInMillis = end.toLong() * 1000
     }
     return simple.format(calendar.timeInMillis) + simple2.format(calendar2.timeInMillis)
 }
