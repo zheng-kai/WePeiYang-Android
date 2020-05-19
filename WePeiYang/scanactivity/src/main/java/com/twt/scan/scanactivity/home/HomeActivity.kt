@@ -3,17 +3,11 @@ package com.twt.scan.scanactivity.home
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
-import android.util.Log
 import com.githang.statusbar.StatusBarCompat
 import com.twt.scan.scanactivity.DataViewModel
 import com.twt.scan.scanactivity.R
-import com.twt.scan.scanactivity.add
-import com.twt.wepeiyang.commons.ui.rec.withItems
-import com.twt.scan.scanactivity.api.Details
 import com.twt.scan.scanactivity.api.ScanActivityService
 import com.twt.scan.scanactivity.api.ScanPreferences
-import com.twt.wepeiyang.commons.experimental.extensions.QuietCoroutineExceptionHandler
 import kotlinx.android.synthetic.main.scanactivity_activity_home.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -38,12 +32,12 @@ class HomeActivity : AppCompatActivity() {
                             HomeFragment.newInstance(HomeTitle.JOINED_TITLE)))
         }
         tl_home.setupWithViewPager(vp_home)
-        GlobalScope.launch(Dispatchers.IO + QuietCoroutineExceptionHandler) {
+        GlobalScope.launch(Dispatchers.IO) {
             val info = ScanActivityService.getUserInfo().await()
             ScanPreferences.twtid = info.data?.user_id
             ScanPreferences.permissionLevel = info.data?.permission
         }
-        GlobalScope.launch(Dispatchers.IO + QuietCoroutineExceptionHandler) {
+        GlobalScope.launch(Dispatchers.IO ) {
             DataViewModel.apply {
 //                val result = ScanActivityService.login().await()
 //                Log.d("result",result.message)
@@ -64,19 +58,19 @@ class HomeActivity : AppCompatActivity() {
         return simple.format(calendar.timeInMillis) + simple2.format(calendar2.timeInMillis)
     }
 
-    private fun RecyclerView.addData(data: List<Details>?, isManagerBtn: Boolean) {
-        withItems {
-            if (isManagerBtn) {
-                data?.forEach {
-                    add(it.title, it.position, formatDate(it.start, it.end), it.teacher, it.activity_id)
-                }
-            } else {
-                data?.forEach {
-                    add(it.title, it.position, formatDate(it.start, it.end), it.teacher)
-                }
-            }
-
-        }
-    }
+//    private fun RecyclerView.addData(data: List<Details>?, isManagerBtn: Boolean) {
+//        withItems {
+//            if (isManagerBtn) {
+//                data?.forEach {
+//                    add(it.title, it.position, formatDate(it.start, it.end), it.teacher, it.activity_id)
+//                }
+//            } else {
+//                data?.forEach {
+//                    add(it.title, it.position, formatDate(it.start, it.end), it.teacher)
+//                }
+//            }
+//
+//        }
+//    }
 
 }

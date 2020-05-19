@@ -34,21 +34,21 @@ object DataViewModel : ViewModel() {
             HomeTitle.JOINED_TITLE -> {
                 val result = refreshDataBean(FINISHED_ACTIVITY)
                 if (result) {
-                    pageMap[0] = 1
+                    pageMap[FINISHED_ACTIVITY] = 1
                 }
                 result
             }
             HomeTitle.NOT_JOINED_TITLE -> {
                 val result = refreshDataBean(DOING_ACTIVITY)
                 if (result) {
-                    pageMap[1] = 1
+                    pageMap[DOING_ACTIVITY] = 1
                 }
                 result
             }
             HomeTitle.MANAGER_TITLE -> {
                 val result = refreshDataBean(MANAGER_ACTIVITY)
                 if (result) {
-                    pageMap[2] = 1
+                    pageMap[MANAGER_ACTIVITY] = 1
                 }
                 result
             }
@@ -82,7 +82,6 @@ object DataViewModel : ViewModel() {
                 }
             }
             return true
-
         }
         return false
 
@@ -92,17 +91,17 @@ object DataViewModel : ViewModel() {
         when (type) {
             HomeTitle.JOINED_TITLE -> {
                 if (getDataBeanMore(FINISHED_ACTIVITY)) {
-                    pageMap[FINISHED_ACTIVITY] = pageMap[FINISHED_ACTIVITY] ?: 0 + 1
+                    pageMap[FINISHED_ACTIVITY] = (pageMap[FINISHED_ACTIVITY] ?: 0) + 1
                 }
             }
             HomeTitle.NOT_JOINED_TITLE -> {
                 if (getDataBeanMore(DOING_ACTIVITY)) {
-                    pageMap[DOING_ACTIVITY] = pageMap[DOING_ACTIVITY] ?: 0 + 1
+                    pageMap[DOING_ACTIVITY] = (pageMap[DOING_ACTIVITY] ?: 0) + 1
                 }
             }
             HomeTitle.MANAGER_TITLE -> {
                 if (getDataBeanMore(MANAGER_ACTIVITY)) {
-                    pageMap[MANAGER_ACTIVITY] = pageMap[MANAGER_ACTIVITY] ?: 0 + 1
+                    pageMap[MANAGER_ACTIVITY] = (pageMap[MANAGER_ACTIVITY] ?: 0) + 1
                 }
             }
         }

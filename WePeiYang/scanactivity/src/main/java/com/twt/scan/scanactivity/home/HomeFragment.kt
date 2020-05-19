@@ -9,20 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import com.twt.scan.scanactivity.DataViewModel
-import com.twt.scan.scanactivity.R
-import com.twt.scan.scanactivity.add
-import com.twt.scan.scanactivity.api.ScanActivityService
-import com.twt.scan.scanactivity.formatDate
+import com.twt.scan.scanactivity.*
 import com.twt.scan.scanactivity.home.HomeTitle.MANAGER_TITLE
 import com.twt.scan.scanactivity.home.HomeTitle.NOT_JOINED_TITLE
 import com.twt.wepeiyang.commons.experimental.CommonContext
 import com.twt.wepeiyang.commons.experimental.extensions.bindNonNull
-import com.twt.wepeiyang.commons.experimental.preference.CommonPreferences
+import com.twt.wepeiyang.commons.ui.rec.refreshAll
 import com.twt.wepeiyang.commons.ui.rec.withItems
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.scanactivity_fragment_home.view.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
@@ -72,16 +67,16 @@ class HomeFragment : Fragment() {
                     view.tv_home_fragment_loading.visibility = View.INVISIBLE
                     when (title) {
                         MANAGER_TITLE -> {
-                            view.rv_home_fragment.withItems {
+                            view.rv_home_fragment.refreshAll {
                                 it.forEach { it ->
-                                    add(it.title, it.position, formatDate(it.start, it.end), it.teacher, it.activity_id)
+                                    addManagerActivity(it.title, it.position, formatDate(it.start, it.end), it.teacher, it.activity_id)
                                 }
                             }
                         }
                         else -> {
-                            view.rv_home_fragment.withItems {
+                            view.rv_home_fragment.refreshAll {
                                 it.forEach { it ->
-                                    add(it.title, it.position, formatDate(it.start, it.end), it.teacher)
+                                    addNormalActivity(it.activity_id,it.title, it.position, formatDate(it.start, it.end), it.teacher)
                                 }
                             }
                         }

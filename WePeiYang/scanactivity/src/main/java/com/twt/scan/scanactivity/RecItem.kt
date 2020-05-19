@@ -21,7 +21,21 @@ import org.jetbrains.anko.layoutInflater
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HomeItem(val title: String, val location: String, val time: String, val person: String) : Item {
+class HomeItem(val title: String, val location: String, val time: String, val person: String, val id: Int) : Item {
+    override fun areItemsTheSame(newItem: Item): Boolean {
+        if (newItem is HomeItem) {
+            return id == newItem.id
+        }
+        return false
+    }
+
+    override fun areContentsTheSame(newItem: Item): Boolean {
+        if (newItem is HomeItem) {
+            return id == newItem.id
+        }
+        return false
+    }
+
     companion object Controller : ItemController {
         override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
             val view = CommonContext.application.layoutInflater.inflate(R.layout.scanactivity_item_home, parent, false)
@@ -58,6 +72,20 @@ class HomeItem(val title: String, val location: String, val time: String, val pe
 }
 
 class ManagerItem(val title: String, val location: String, val time: String, val person: String, val id: Int) : Item {
+
+    override fun areItemsTheSame(newItem: Item): Boolean {
+        if (newItem is ManagerItem) {
+            return id == newItem.id
+        }
+        return false
+    }
+
+    override fun areContentsTheSame(newItem: Item): Boolean {
+        if (newItem is ManagerItem) {
+            return id == newItem.id
+        }
+        return false
+    }
 
     companion object Controller : ItemController {
 
@@ -107,8 +135,13 @@ class ManagerItem(val title: String, val location: String, val time: String, val
     override val controller: ItemController
         get() = Controller
 }
-fun MutableList<Item>.add(title: String?, location: String?, time: String?, teacher: String?) = add(HomeItem(title ?:"无", location?:"未知", time?:"待定", teacher?:"无"))
-fun MutableList<Item>.add(title: String?, position: String?, time: String?, teacher: String?, activityId: Int) = add(ManagerItem(title?:"无", position?:"未知", time?:"待定", teacher?:"无", activityId))
+
+fun MutableList<Item>.addNormalActivity(normalActivityId: Int, title: String?, location: String?, time: String?, teacher: String?) = add(HomeItem(title
+        ?: "无", location ?: "未知", time ?: "待定", teacher ?: "无", normalActivityId))
+
+fun MutableList<Item>.addManagerActivity(title: String?, position: String?, time: String?, teacher: String?, activityId: Int) = add(ManagerItem(title
+        ?: "无", position ?: "未知", time ?: "待定", teacher ?: "无", activityId))
+
 fun formatDate(start: String, end: String): String {
     val simple = SimpleDateFormat("yyyy年MM月dd日 HH:mm")
     val calendar = Calendar.getInstance().apply {
