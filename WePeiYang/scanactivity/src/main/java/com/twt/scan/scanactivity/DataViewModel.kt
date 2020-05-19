@@ -112,9 +112,18 @@ object DataViewModel : ViewModel() {
 
     suspend fun getAllBeanInit() {
 
-        refreshBean(HomeTitle.NOT_JOINED_TITLE)
-        refreshBean(HomeTitle.MANAGER_TITLE)
-        refreshBean(HomeTitle.JOINED_TITLE)
+        GlobalScope.launch(IO) {
+            refreshBean(HomeTitle.NOT_JOINED_TITLE)
+
+        }
+        GlobalScope.launch(IO) {
+            refreshBean(HomeTitle.MANAGER_TITLE)
+
+        }
+        GlobalScope.launch(IO) {
+            refreshBean(HomeTitle.JOINED_TITLE)
+
+        }
 
     }
 
