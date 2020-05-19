@@ -9,6 +9,7 @@
     tools:context=".qrcode.MyQRCode">
 
     <android.support.v7.widget.Toolbar
+        app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/tb_qrcode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,15 +51,19 @@
             android:layout_marginEnd="13dp"
             android:background="@color/white_color"
             android:paddingTop="22dp"
-            android:paddingBottom="48dp">
+            android:paddingBottom="15dp"
+            >
 
             <android.support.constraint.ConstraintLayout
+                app:layout_constraintTop_toTopOf="parent"
                 android:id="@+id/cl_qrcode_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent">
 
                 <ImageView
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     android:id="@+id/iv_logo_qrcode"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
@@ -91,19 +96,22 @@
             </android.support.constraint.ConstraintLayout>
 
             <ImageView
-                android:layout_margin="13dp"
+                android:layout_marginStart="17dp"
+                android:layout_marginEnd="17dp"
                 android:scaleType="fitCenter"
                 android:id="@+id/iv_qrcode_display"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="26dp"
                 app:layout_constraintTop_toBottomOf="@+id/cl_qrcode_title"
+                android:layout_marginBottom="12dp"
+                app:layout_constraintBottom_toTopOf="@id/tv_qrcode_description"
                 android:contentDescription="个人二维码" />
             <TextView
-                android:layout_marginTop="26dp"
+                android:id="@+id/tv_qrcode_description"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_qrcode_display"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:text="向管理员出示上方二维码，进行签到"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
