@@ -190,12 +190,12 @@ fun MutableList<Item>.addFooter(content: String) = add(Footer(content))
 
 fun formatDate(start: String, end: String): String {
     val simple = SimpleDateFormat("yyyy年MM月dd日 HH:mm")
-    val calendar = Calendar.getInstance().apply {
-        timeInMillis = start.toLong() * 1000
+    val calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8")).apply {
+        timeInMillis = start.toLong()
     }
-    val simple2 = SimpleDateFormat("-HH:mm")
-    val calendar2 = Calendar.getInstance().apply {
-        timeInMillis = end.toLong() * 1000
+    val simple2 = SimpleDateFormat("\n-yyyy年MM月dd日HH:mm")
+    val calendar2 = Calendar.getInstance(TimeZone.getTimeZone("GMT+8")).apply {
+        timeInMillis = end.toLong()
     }
     return simple.format(calendar.timeInMillis) + simple2.format(calendar2.timeInMillis)
 }

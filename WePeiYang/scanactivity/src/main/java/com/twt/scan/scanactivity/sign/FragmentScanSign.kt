@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.QuickContactBadge
 import android.widget.Toast
 import cn.bingoogolapple.qrcode.core.BarcodeType
 import cn.bingoogolapple.qrcode.core.QRCodeView
@@ -18,13 +19,12 @@ import com.twt.scan.scanactivity.R
 import com.twt.scan.scanactivity.api.ScanActivityService
 import com.twt.wepeiyang.commons.data.QRInfo
 import com.twt.wepeiyang.commons.experimental.CommonContext
+import com.twt.wepeiyang.commons.experimental.extensions.QuietCoroutineExceptionHandler
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.scanactivity_fragment_sign_scan.view.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Main
 import pub.devrel.easypermissions.EasyPermissions
-import kotlinx.coroutines.delay
 
 class FragmentScanSign : Fragment(), QRCodeView.Delegate, EasyPermissions.PermissionCallbacks {
 
@@ -83,20 +83,28 @@ class FragmentScanSign : Fragment(), QRCodeView.Delegate, EasyPermissions.Permis
                     dialog.dismiss()
                 }
                 .setPositiveButton("是") { dialog, _ ->
-                    GlobalScope.launch(Dispatchers.Main) {
-                        val commonBody = ScanActivityService.sign(activityId, qrInfo.id, (System.currentTimeMillis() / 1000).toInt()).await()
-                        if (commonBody.error_code != 0) {
-                            Toasty.error(CommonContext.application, commonBody.message)
-                        } else {
-                            Toasty.normal(CommonContext.application, commonBody.message)
+                    GlobalScope.launch(Dispatchers.IO + QuietCoroutineExceptionHandler) {
+                        val resultBody = ScanActivityService.sign(activityId, qrInfo.id, System.currentTimeMillis()).await()
+                        withContext(Main) {
+                            if (resultBody.error_code != 0) {
+                                context?.let {
+                                    Toasty.error(it, resultBody.message).show()
+                                }
+                            } else {
+                                context?.let {
+                                    Toasty.normal(it, resultBody.message).show()
+
+                                }
+                            }
+                            dialog.dismiss()
+
                         }
-                        dialog.dismiss()
                     }
                 }
                 .create()
                 .show()
 
-        Toasty.normal(CommonContext.application, "录入成功", Toast.LENGTH_SHORT).show()
+//        Toasty.normal(CommonContext.application, "录入成功", Toast.LENGTH_SHORT).show()
         GlobalScope.launch {
             delay(1000)
             zxyScan.startSpot()

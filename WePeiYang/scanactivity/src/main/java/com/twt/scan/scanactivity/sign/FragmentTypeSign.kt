@@ -17,12 +17,15 @@ import com.twt.wepeiyang.commons.experimental.extensions.QuietCoroutineException
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.scanactivity_fragment_sign_type.view.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Main
 
 class FragmentTypeSign : Fragment() {
     var studentId = ""
+    var studentName = ""
     var activityId = 0
     private lateinit var tvHint: TextView
     private lateinit var etId: EditText
+
     //    private lateinit var tvLoadHint: TextView
     private lateinit var listener: CanChangeFragment
 
@@ -49,29 +52,35 @@ class FragmentTypeSign : Fragment() {
         }
         view.btn_fragment_sign_type_confirm.setOnClickListener {
             if (isIdValid()) {
-                GlobalScope.launch(Dispatchers.Main + QuietCoroutineExceptionHandler) {
-                    val res = ScanActivityService.getNameByNumber(studentId).await()
-                    AlertDialog.Builder(context)
-                            .setTitle("录入信息为\n")
-                            .setMessage("$studentId  ${res.data}\n\n是否录入?")
-                            .setPositiveButton("取消") { dialog, _ ->
-                                dialog.dismiss()
-                            }
-                            .setNegativeButton("确认") { dialog, _ ->
-                                GlobalScope.launch(Dispatchers.Default + QuietCoroutineExceptionHandler) {
-                                    val result = ScanActivityService.sign(activityId, studentId, (System.currentTimeMillis() / 1000).toInt()).await()
-                                    if (result.error_code != 0) {
-                                        Toasty.error(CommonContext.application, result.message)
+//                    val res = ScanActivityService.getNameByNumber(studentId).await()
+                AlertDialog.Builder(context)
+                        .setTitle("录入信息为\n")
+                        .setMessage("$studentId  ${studentName}\n\n是否录入?")
+                        .setPositiveButton("取消") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .setNegativeButton("确认") { dialog, _ ->
+                            GlobalScope.launch(Dispatchers.IO + QuietCoroutineExceptionHandler) {
+                                val resultBody = ScanActivityService.sign(activityId, studentId, System.currentTimeMillis()).await()
+                                withContext(Main) {
+                                    if (resultBody.error_code != 0) {
+                                        context?.let {
+                                            Toasty.error(it, resultBody.message).show()
+                                        }
                                     } else {
-                                        Toasty.normal(CommonContext.application, result.message)
+                                        context?.let {
+                                            Toasty.normal(it, resultBody.message).show()
+
+                                        }
                                     }
+                                    dialog.dismiss()
                                 }
-                                dialog.dismiss()
                             }
-                            .create()
-                            .show()
+                        }
+                        .create()
+                        .show()
 //                    }
-                }
+
             }
         }
         retainInstance = true

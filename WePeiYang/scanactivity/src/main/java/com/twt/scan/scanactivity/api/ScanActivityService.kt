@@ -20,7 +20,7 @@ interface ScanActivityService {
     fun sign(
             @Query("activity_id") activity_id: Int,
             @Query("student_number") student_number: String,
-            @Query("time") time: Int,
+            @Query("time") time: Long, // 时间戳单位为毫秒
             @Query("twtid") twtId: Int? = ScanPreferences.twtid): Deferred<CommonBody<Any>>
 
     @GET("${BASE_URL}activity/index")
@@ -31,10 +31,10 @@ interface ScanActivityService {
             @Query("twtid") twtId: Int? = ScanPreferences.twtid
     ): Deferred<CommonBody<ActivityBean>>
 
-    @GET("${BASE_URL}user/register/checkManager")
-    fun checkManager(
-            @Query("user_id") user_id: String,
-            @Query("twtid") twtId: Int? = ScanPreferences.twtid): Deferred<CommonBody<Any>>
+//    @GET("${BASE_URL}user/register/checkManager")
+//    fun checkManager(
+//            @Query("user_id") user_id: String,
+//            @Query("twtid") twtId: Int? = ScanPreferences.twtid): Deferred<CommonBody<Any>>
 
     @GET("${BASE_URL}user/getNameByNumber")
     fun getNameByNumber(
