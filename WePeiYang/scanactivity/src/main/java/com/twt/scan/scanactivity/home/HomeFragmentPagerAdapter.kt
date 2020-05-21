@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 
-class HomeFragmentPagerAdapter(fm: FragmentManager, private val fragments: List<HomeFragment>) : FragmentPagerAdapter(fm) {
+class HomeFragmentPagerAdapter(fm: FragmentManager, private val fragments: ArrayList<HomeFragment>) : FragmentPagerAdapter(fm) {
     override fun getItem(position: Int): Fragment = fragments[position]
 
     override fun getCount(): Int = fragments.size
@@ -14,5 +14,8 @@ class HomeFragmentPagerAdapter(fm: FragmentManager, private val fragments: List<
         HomeTitle.NOT_JOINED_TITLE -> "待参加"
         HomeTitle.JOINED_TITLE -> "已参加"
     }
-
+    public fun addFragment(fragment:HomeFragment){
+        fragments.add(fragment)
+        notifyDataSetChanged()
+    }
 }

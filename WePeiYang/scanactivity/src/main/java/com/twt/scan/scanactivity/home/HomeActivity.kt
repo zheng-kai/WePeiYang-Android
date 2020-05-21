@@ -10,9 +10,9 @@ import com.twt.scan.scanactivity.api.ScanActivityService
 import com.twt.scan.scanactivity.api.ScanPreferences
 import com.twt.wepeiyang.commons.experimental.extensions.QuietCoroutineExceptionHandler
 import kotlinx.android.synthetic.main.scanactivity_activity_home.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -24,24 +24,34 @@ class HomeActivity : AppCompatActivity() {
         iv_home_back.setOnClickListener {
             onBackPressed()
         }
+        
+        val adapter = HomeFragmentPagerAdapter(supportFragmentManager,
+                arrayListOf(HomeFragment.newInstance(HomeTitle.NOT_JOINED_TITLE),
+                        HomeFragment.newInstance(HomeTitle.JOINED_TITLE)))
 
         vp_home.apply {
             this.offscreenPageLimit = 2
-            adapter = HomeFragmentPagerAdapter(supportFragmentManager,
-                    listOf(HomeFragment.newInstance(HomeTitle.MANAGER_TITLE),
-                            HomeFragment.newInstance(HomeTitle.NOT_JOINED_TITLE),
-                            HomeFragment.newInstance(HomeTitle.JOINED_TITLE)))
+            this.adapter = adapter
         }
+
         tl_home.setupWithViewPager(vp_home)
-        GlobalScope.launch(Dispatchers.IO+ QuietCoroutineExceptionHandler) {
-            val info = ScanActivityService.getUserInfo().await()
-            ScanPreferences.twtid = info.data?.user_id
-            ScanPreferences.permissionLevel = info.data?.permission
+        GlobalScope.launch(IO) {
+            if (ScanPreferences.permissionLevel == null || ScanPreferences.twtid == null) {
+                val info = ScanActivityService.getUserInfo().await()
+                ScanPreferences.twtid = info.data?.user_id
+                ScanPreferences.permissionLevel = info.data?.permission
+            }
+            withContext(Main) {
+                if (ScanPreferences.permissionLevel == 2) {
+                    adapter.addFragment(HomeFragment.newInstance(HomeTitle.MANAGER_TITLE))
+
+                }
+            }
+
         }
-        GlobalScope.launch(Dispatchers.IO+ QuietCoroutineExceptionHandler ) {
+
+        GlobalScope.launch(Dispatchers.IO + QuietCoroutineExceptionHandler) {
             DataViewModel.apply {
-//                val result = ScanActivityService.login().await()
-//                Log.d("result",result.message)
                 getAllBeanInit()
             }
         }
@@ -59,19 +69,5 @@ class HomeActivity : AppCompatActivity() {
         return simple.format(calendar.timeInMillis) + simple2.format(calendar2.timeInMillis)
     }
 
-//    private fun RecyclerView.addData(data: List<Details>?, isManagerBtn: Boolean) {
-//        withItems {
-//            if (isManagerBtn) {
-//                data?.forEach {
-//                    add(it.title, it.position, formatDate(it.start, it.end), it.teacher, it.activity_id)
-//                }
-//            } else {
-//                data?.forEach {
-//                    add(it.title, it.position, formatDate(it.start, it.end), it.teacher)
-//                }
-//            }
-//
-//        }
-//    }
 
 }
