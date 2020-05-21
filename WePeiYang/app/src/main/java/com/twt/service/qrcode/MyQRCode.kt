@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.Constraints
 import android.support.v7.app.AppCompatActivity
+import android.util.Base64
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
@@ -69,7 +70,7 @@ class MyQRCode : AppCompatActivity() {
 
     private fun generateQRCode() {
         bean = QRInfo(CommonPreferences.realName, CommonPreferences.studentid, System.currentTimeMillis())
-        bitmap = QRCodeEncoder.syncEncodeQRCode(gson.toJson(bean), width)
+        bitmap = QRCodeEncoder.syncEncodeQRCode(Base64.encodeToString(gson.toJson(bean).toByteArray(), Base64.DEFAULT), width)
         bitmap?.let {
             ivQRCode.setImageBitmap(it)
             Toasty.normal(this@MyQRCode, "二维码生成成功", Toast.LENGTH_SHORT).show()

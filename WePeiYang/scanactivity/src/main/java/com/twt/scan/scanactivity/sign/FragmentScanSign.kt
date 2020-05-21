@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Vibrator
 import android.support.v4.app.Fragment
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,7 +76,7 @@ class FragmentScanSign : Fragment(), QRCodeView.Delegate, EasyPermissions.Permis
 
     override fun onScanQRCodeSuccess(result: String?) {
         vibrate()
-        val qrInfo = gson.fromJson<QRInfo>(result, QRInfo::class.java)
+        val qrInfo = gson.fromJson<QRInfo>(String(Base64.decode(result,Base64.DEFAULT)), QRInfo::class.java)
         AlertDialog.Builder(context)
                 .setTitle("录入信息为")
                 .setMessage("${qrInfo.id}  ${qrInfo.name}\n\n是否录入?")
